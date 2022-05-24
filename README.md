@@ -1,5 +1,5 @@
 # exotel-voip-sdk-android
-Exotel VOIP SDK for Android 
+This github contains below details  
 
 # Exotel voice sdk Integratuion guide is available in beloe document.
 Exotel Voice Client Android SDK Integration Guide.docx
