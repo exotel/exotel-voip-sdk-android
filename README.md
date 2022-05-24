@@ -3,14 +3,14 @@ This github contains documentation, sample app package.
 
 
 
-# Exotel voice sdk integration guide
+# Exotel voice SDK integration guide
 Please refer the exotel voice sdk integration guide for writing application.
 Doc: Exotel Voice Client Android SDK Integration Guide.docx
 
 
 
-# Exotel voice sdk api document. 
-Dowdnload the zip file, extract and open the index.html file for complete api list.
+# Exotel voice SDK api document. 
+Dowdnload the zip file, extract and open the index.html file for complete API list.
 Doc: exotel-voice-sdk_1.0.13-Api-Doc.zip
 
 
