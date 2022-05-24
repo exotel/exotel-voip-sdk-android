@@ -18,6 +18,3 @@ Doc: exotel-voice-sdk_1.0.13-Api-Doc.zip
 # Exotel android sample application package. 
 This test application can be downloaded and installed over android device for demo.
 APK: ExotelVoice1.0.15-release.apk
-
-
-
