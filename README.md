@@ -9,7 +9,7 @@ File: Exotel Voice Client Android SDK Integration Guide.docx
 
 
 # Exotel Voice SDK API documentation
-Download the zip file, extract, and open index.html file for list of APIs
+Download the zip file, extract, and open index.html file for list of APIs.
 File: exotel-voice-sdk_1.0.13-Api-Doc.zip
 
 
