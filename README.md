@@ -15,6 +15,12 @@ File: [exotel-voice-sdk_1.0.13-Api-Doc.zip](https://github.com/exotel/exotel-voi
 
 
 
+## Exotel Voice SDK package
+Download the aar file and follow the instruction provided in Exotel Voice SDK Integration Guide.  
+File: [exotel-voice-release.aar](https://github.com/exotel/exotel-voip-sdk-android/blob/main/SDK/exotel-voice-release.aar)
+
+
+
 
 ## Exotel Android sample application package
 This test application can be downloaded and installed over an android device for a demo. Contact us to get an account.  
