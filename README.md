@@ -1,5 +1,5 @@
 # exotel-voip-sdk-android
-Contains SDK API documentation, integration guide, SDK and sample app package
+Contains SDK, integration guide, sample app package and API documentation.
 
 
 ## Exotel Voice SDK
