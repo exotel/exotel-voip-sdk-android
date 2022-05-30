@@ -4,7 +4,7 @@ Contains SDK API documentation, integration guide, and sample app package
 
 
 ## Exotel Voice SDK Integration Guide  
-File: [Exotel Voice Client Android SDK Integration Guide.docx](https://github.com/exotel/exotel-voip-sdk-android/blob/main/Exotel%20Voice%20Client%20Android%20SDK%20Integration%20Guide.docx)
+File: [Exotel-Voice-Client-Android-SDK-Integration-Guide.pdf](https://github.com/exotel/exotel-voip-sdk-android/blob/main/Exotel-Voice-Client-Android-SDK-Integration-Guide.pdf)
 
 
 
