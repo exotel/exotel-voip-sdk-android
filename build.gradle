@@ -1,0 +1,49 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "com.awesomeness.exovoice"
+        minSdk 21
+        targetSdk 31
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.6.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation files('/home/sreerags/source/projects/back_up_exotel/exotel_voice_android/jetix/exotel-voice/build/outputs/aar/exotel-voice-release.aar')
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
+    implementation "androidx.preference:preference:1.1.0"
+
+
+    //For ExoVoice
+    implementation 'com.google.code.gson:gson:[2.8.5]'
+    implementation 'dnsjava:dnsjava:[2.1.9,)'
+    implementation 'com.squareup.okhttp3:okhttp:[3.14.2,)'
+    implementation 'com.squareup.okhttp3:logging-interceptor:[3.14.2,)'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+}
