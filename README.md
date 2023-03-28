@@ -17,7 +17,7 @@ File: [Exotel-Voice-Client-Android-SDK-Integration-Guide.pdf](https://github.com
 
 ## Exotel Voice Sample Application Package
 This test application can be downloaded and installed over an android device for a demo. Contact us to get an account.  
-File: [ExotelVoice1.0.15-release.apk](https://github.com/exotel/exotel-voip-sdk-android/blob/main/ExotelVoice1.0.15-release.apk)
+File: [ExotelVoice1.0.29-debug.apk](https://github.com/exotel/exotel-voip-sdk-android/blob/main/ExotelVoice1.0.29-debug.apk)
 
 
 
