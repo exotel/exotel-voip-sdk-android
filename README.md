@@ -1,6 +1,7 @@
 # exotel-voip-sdk-android
 Contains SDK, integration guide, sample app package and API documentation.
 
+Download sample application from  Playstore : [Exotel App2App](https://play.google.com/store/apps/details?id=com.exotel.voicesample&pcampaignid=web_share)
 
 ## Exotel Voice SDK
 Download the aar sdk file, follow the instructions provided in [Exotel-Voice-Client-Android-SDK-Integration-Guide.pdf](https://github.com/exotel/exotel-voip-sdk-android/blob/main/Exotel%20Voice%20Client%20Android%20SDK%20Integration%20Guide.pdf).  
