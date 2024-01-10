@@ -1,3 +1,4 @@
-# Mobile SDK Simple Button Reference 
+# Exotel Sample Voice Application
 
-Simple Android reference application, demonstrating the use of the Exotel Voice Client Mobile SDK to perform voip calls.
+This is sample application which has integrated the exotel voice sdk.
+
