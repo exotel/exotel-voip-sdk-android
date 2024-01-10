@@ -1,0 +1,13 @@
+.vscode/
+.idea/
+config.json
+api.tar.gz
+target/
+service/http/api
+.DS_Store
+jetixApp/exotel-voice-sdk/build
+jetixApp/app/build
+jetixApp/.gradle
+jetix/CloudonixSDK/build
+*.aar
+*.tar.gz
