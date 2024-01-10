@@ -1,0 +1,102 @@
+/*
+ * Copyright 2019 Exotel India Pvt Ltd
+ * All rights reserved
+ */
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+}
+
+android {
+
+    packagingOptions {
+        pickFirst("META-INF/okio.kotlin_module")
+        pickFirst("META-INF/opentest4k.kotlin_module")
+        pickFirst("META-INF/assertk.kotlin_module")
+        pickFirst("META-INF/okhttp.kotlin_module")
+
+        pickFirst("META-INF/kotlin-project-structure-metadata.json")
+        pickFirst("commonMain/default/linkdata/root_package/0_.knm")
+        pickFirst("commonMain/default/manifest")
+        pickFirst("commonMain/default/linkdata/module")
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('../localReleaseKey.jks')
+            storePassword 'exotel321'
+            keyAlias = 'relKey'
+            keyPassword 'exotel321'
+        }
+    }
+    compileSdkVersion 34
+    defaultConfig {
+        applicationId "com.exotel.voicesample"
+        minSdkVersion 21
+        targetSdkVersion 34
+        versionCode 16
+        versionName "1.0.42"
+        archivesBaseName = "ExotelVoice-" + versionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
+        buildConfigField "boolean", "HIDE_MULTI_CALL", "true"
+    }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
+    buildTypes {
+        debug {
+            firebaseCrashlytics {
+                nativeSymbolUploadEnabled true
+                unstrippedNativeLibsDir "./build/intermediates"
+            }
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            firebaseCrashlytics {
+                nativeSymbolUploadEnabled true
+                unstrippedNativeLibsDir "./build/intermediates"
+            }
+        }
+    }
+    namespace "com.exotel.voicesample"
+}
+
+
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+    implementation 'com.google.android.material:material:1.0.0-beta01'
+    implementation 'com.google.firebase:firebase-core:17.0.1'
+    implementation 'com.google.firebase:firebase-messaging:19.0.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
+    // Need to add this for 5.2.23
+    implementation 'androidx.preference:preference:1.1.0'
+
+    // Add dependency
+    implementation platform('com.google.firebase:firebase-bom:31.2.3')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-crashlytics-ndk'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+
+    implementation 'com.google.code.gson:gson:[2.8.5]'
+    implementation 'dnsjava:dnsjava:[2.1.9,)'
+    implementation 'com.squareup.okhttp3:okhttp:[3.14.2,)'
+    implementation 'com.squareup.okhttp3:logging-interceptor:[3.14.2,)'
+    implementation project(path: ':exotel-voice-sdk')
+
+}

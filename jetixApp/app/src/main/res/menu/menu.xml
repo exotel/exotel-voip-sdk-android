@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2019 Exotel Techcom Pvt Ltd
+  ~ All rights reserved
+  -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/logout"
+        android:title="@string/Logout"></item>
+
+    <item
+        android:id="@+id/uploadLogs"
+        android:title="@string/upload_logs"></item>
+
+    <item
+        android:id="@+id/about"
+        android:title="@string/About"></item>
+
+    <item
+        android:id="@+id/postFeedback"
+        android:title="@string/lastCallFeedback"></item>
+
+    <item
+        android:id="@+id/accountDetails"
+        android:title="@string/accountDetails"></item>
+
+    <!--Removing debug dialing mode-->
+    <!-- <item android:id="@+id/enableDebugDialling"
+         android:title="@string/enableDebugDialling"></item>
+
+     <item android:id="@+id/disableDebugDialling"
+         android:title="@string/disableDebugDialling"></item>-->
+
+    <item
+        android:id="@+id/enableMulticall"
+        android:title="@string/enableMulticall"></item>
+
+    <item
+        android:id="@+id/disableMulticall"
+        android:title="@string/disableMulticall"></item>
+
+</menu>

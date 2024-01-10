@@ -1,0 +1,44 @@
+<!--
+  ~ Copyright (c) 2019 Exotel Techcom Pvt Ltd
+  ~ All rights reserved
+  -->
+<resources>
+    <string name="app_name">Exotel Voice Application</string>
+    <string name="title_activity_toolbar">Exotel Voice Application</string>
+    <string name="connected">CONNECTED</string>
+    <string name="hold_resume">HOLD-RESUME</string>
+    <string name="send_dtmf">SEND_DTMF</string>
+    <string name="media_stats">GET-MEDIA-STATS</string>
+    <string name="vn_number">9008420326</string>
+    <string name="enter_user_id">User ID</string>
+    <string name="enter_display_name">Display Name</string>
+    <string name="enter_password">Password</string>
+    <string name="enter_hostname">Hostname</string>
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+    <string name="Logout">Logout</string>
+    <string name="About">SDK Details</string>
+    <string name="accountDetails">Account Details</string>
+    <string name="enableDebugDialling">Enable Debug Dialling</string>
+    <string name="lastCallFeedback">Last Call Feedback</string>
+    <string name="disableDebugDialling">Disable Debug Dialling</string>
+    <string name="enableMulticall">Enable Multi-call</string>
+    <string name="disableMulticall">Disable Multi-Call</string>
+    <string name="initialize">Initialize</string>
+    <string name="deinitialize">De-Initialize</string>
+    <string name="action_sign_in">Login</string>
+    <string name="action_sign_up">Sign Up</string>
+    <string name="upload_logs">Report Problem</string>
+    <string name="hide_keypad">Hide KeyPad</string>
+    <string name="show_keypad">Show KeyPad</string>
+    <string name="account_sid_prompt">Account SID</string>
+    <string name="sdk_init_in_progress">Initialisation in progress</string>
+
+    <string name="advanced_settings"><u>Advanced Settings</u></string>
+
+    <string name="demo_text_for_ui">This is a text used for development purpose</string>
+    <!-- login details for QA and Prod -->
+    <string name="sid_qa">exotel41us3</string>
+    <string name="sid_prod">exotel675</string>
+    <string name="hostname_prod">https://bellatrix.apac-sg.exotel.in/v1</string>
+    <string name="hostname_qa">http://twilix.us3.qaexotel.com/v1</string>
+</resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019 Exotel Techcom Pvt Ltd
+  ~ All rights reserved
+  -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/call_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/layout_call"
+                  android:id="@+id/layout_call"
+                  android:visibility="visible" />
+
+        <include layout="@layout/layout_call_keypad"
+                 android:id="@+id/layout_call_keypad"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:layout_gravity="center_horizontal"
+                 android:visibility="gone" />
+
+
+    </FrameLayout>
+    <Button
+        android:id="@+id/b_toggle_keypad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/show_keypad"
+        android:visibility="visible" />
+
+
+
+</LinearLayout>
