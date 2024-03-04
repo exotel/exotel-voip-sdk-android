@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [un-released]
+
+### Changed
+* exotel sdk upgraded to version 1.0.43
+
 ## [1.0.42] 10-01-2024
 
 ### Added
