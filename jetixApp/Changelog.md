@@ -6,18 +6,10 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 * exotel sdk upgraded to version 1.0.43
-
-## [1.0.42] 10-01-2024
+* exotel sdk upgraded to version 1.0.42
 
 ### Added
 * [AP2AP-243](https://exotel.atlassian.net/browse/AP2AP-243) : android 13 onward, declared foreground service types and related changes
-
-### Changed
-* exotel sdk upgraded to version 1.0.42
-
-## [1.0.41] 21-12-2023
-
-### Added
 * [AP2AP-235](https://exotel.atlassian.net/browse/AP2AP-235) : bluetooth switching feature added
 
 ## [1.0.40] 28-08-2023
