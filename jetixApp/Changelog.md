@@ -5,8 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [un-released]
 
 ### Changed
-* exotel sdk upgraded to version 1.0.43
-* exotel sdk upgraded to version 1.0.42
+* exotel sdk upgraded to version 1.0.44. refer [changelog](https://bitbucket.org/Exotel/exotel_voice_android/src/master/jetix/Changelog.md)
+* exotel sdk upgraded to version 1.0.43. refer [changelog](https://bitbucket.org/Exotel/exotel_voice_android/src/master/jetix/Changelog.md)
+* exotel sdk upgraded to version 1.0.42. refer [changelog](https://bitbucket.org/Exotel/exotel_voice_android/src/master/jetix/Changelog.md)
 
 ### Added
 * [AP2AP-243](https://exotel.atlassian.net/browse/AP2AP-243) : android 13 onward, declared foreground service types and related changes

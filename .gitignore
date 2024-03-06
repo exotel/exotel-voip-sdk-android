@@ -9,5 +9,4 @@ jetixApp/exotel-voice-sdk/build
 jetixApp/app/build
 jetixApp/.gradle
 jetix/CloudonixSDK/build
-*.aar
 *.tar.gz
