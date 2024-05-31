@@ -167,7 +167,7 @@ public class VoiceAppService extends Service implements ExotelVoiceClientEventLi
     public void deinitialize() throws Exception {
 
         VoiceAppLogger.debug(TAG, "De-Initialize Voice App Service");
-        exotelVoiceClient.reset(false);
+        exotelVoiceClient.stop();
         VoiceAppLogger.debug(TAG, "After De-Initialize Voice App Service");
         synchronized (statusListenerListMutex) {
             for (VoiceAppStatusEvents statusEvents : voiceAppStatusListenerList) {
@@ -226,7 +226,7 @@ public class VoiceAppService extends Service implements ExotelVoiceClientEventLi
             VoiceAppLogger.error(TAG, "SDK is not yet initialized");
         } else {
             //exotelVoipClient.reset();
-            exotelVoiceClient.reset(false);
+            exotelVoiceClient.stop();
         }
         VoiceAppLogger.debug(TAG, "End: Reset in sample App Service");
     }
@@ -592,6 +592,18 @@ public class VoiceAppService extends Service implements ExotelVoiceClientEventLi
 
         VoiceAppLogger.debug(TAG, "End: onStatusChange");
 
+    }
+
+    @Override
+    public void onDeInitialized() {
+        VoiceAppLogger.debug(TAG, "Start: onDeInitialized");
+        initializationInProgress = false;
+        synchronized (statusListenerListMutex) {
+            for (VoiceAppStatusEvents statusEvents : voiceAppStatusListenerList) {
+                statusEvents.onStatusChange();
+            }
+        }
+        VoiceAppLogger.debug(TAG, "End: onDeInitialized");
     }
 
     @Override
