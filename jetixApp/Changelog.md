@@ -2,9 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [un-released]
+## [1.0.47] 04-06-2024
 
 ### Changed
+* use new APIs introduced in latest version of sdk
+  * stop()
+  * onDeinitialized()
+* exotel sdk upgraded to version 1.0.47. refer [changelog](https://bitbucket.org/Exotel/exotel_voice_android/src/master/jetix/Changelog.md)
 * exotel sdk upgraded to version 1.0.44. refer [changelog](https://bitbucket.org/Exotel/exotel_voice_android/src/master/jetix/Changelog.md)
 * exotel sdk upgraded to version 1.0.43. refer [changelog](https://bitbucket.org/Exotel/exotel_voice_android/src/master/jetix/Changelog.md)
 * exotel sdk upgraded to version 1.0.42. refer [changelog](https://bitbucket.org/Exotel/exotel_voice_android/src/master/jetix/Changelog.md)
