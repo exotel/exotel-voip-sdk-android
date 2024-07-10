@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.50] 10-07-2024
+
+### Changed
+* updated SDK version to 1.0.50
+
 ## [1.0.47] 04-06-2024
 
 ### Changed
