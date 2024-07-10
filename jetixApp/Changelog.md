@@ -7,6 +7,17 @@ All notable changes to this project will be documented in this file.
 ### Changed
 * updated SDK version to 1.0.50
 
+## [1.0.49] 19-06-2024
+
+### Changed
+* exotel sdk upgraded to version 1.0.49. refer [changelog](https://bitbucket.org/Exotel/exotel_voice_android/src/master/jetix/Changelog.md)
+  * fix call initiated flow and hangup code
+
+## [1.0.48] 13-06-2024
+
+### Changed
+* exotel sdk upgraded to version 1.0.48. refer [changelog](https://bitbucket.org/Exotel/exotel_voice_android/src/master/jetix/Changelog.md)
+
 ## [1.0.47] 04-06-2024
 
 ### Changed
