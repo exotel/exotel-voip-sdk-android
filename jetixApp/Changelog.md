@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.51] 16-07-2024
+
+### Changed
+* [VST-786] fixed race condition between set codec and invite during SDK initialization
+
 ## [1.0.50] 10-07-2024
 
 ### Changed
