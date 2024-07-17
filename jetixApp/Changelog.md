@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.52] 17-07-2024
+
+### Added
+* [VST-787] Added try-catch to fix crash during speaker switch in adjust audio route - wingbank
+
 ## [1.0.51] 16-07-2024
 
 ### Changed
