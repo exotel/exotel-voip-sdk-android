@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.54] 30-07-2024
+
+### Added
+* [VST-804](https://exotel.atlassian.net/browse/VST-804) : configured send metrics
+
 ## [1.0.53] 17-07-2024
 
 ### Added
