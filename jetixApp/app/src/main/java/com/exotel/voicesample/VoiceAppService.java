@@ -595,6 +595,9 @@ public class VoiceAppService extends Service implements ExotelVoiceClientEventLi
     }
 
     @Override
+    public void onDestroyMediaSession(){}
+
+    @Override
     public void onDeInitialized() {
         VoiceAppLogger.debug(TAG, "Start: onDeInitialized");
         initializationInProgress = false;
