@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.55] 01-08-2024
+
+### Added
+* [VST-809](https://exotel.atlassian.net/browse/VST-809) : Added listener on onDestroyMediaSession()
+
 ## [1.0.54] 30-07-2024
 
 ### Added
