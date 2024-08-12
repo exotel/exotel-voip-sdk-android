@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.56] 12-08-2024
+
+### Added
+* [VST-805](https://exotel.atlassian.net/browse/VST-805) : pjsip version change to 2.7.2-59
+
 ## [1.0.55] 01-08-2024
 
 ### Added
