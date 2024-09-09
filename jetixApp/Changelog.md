@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.57] 09-09-2024
+
+### Added
+* [VST-837](https://exotel.atlassian.net/browse/VST-837) : updated version of cloudonix from 5.2.53.27 to 5.2.53.28
+
 ## [1.0.56] 12-08-2024
 
 ### Added
