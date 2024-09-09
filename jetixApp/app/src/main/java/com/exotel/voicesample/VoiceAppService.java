@@ -595,7 +595,9 @@ public class VoiceAppService extends Service implements ExotelVoiceClientEventLi
     }
 
     @Override
-    public void onDestroyMediaSession(){}
+    public void onDestroyMediaSession(){
+        VoiceAppLogger.debug(TAG, "in onDestroyMediaSession");
+    }
 
     @Override
     public void onDeInitialized() {
