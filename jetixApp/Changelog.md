@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.60] 30-09-2024
+* [VST-848] Volume level receiver crash fix
+
 ## [1.0.57] 09-09-2024
 
 ### Added
