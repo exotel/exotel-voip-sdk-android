@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [1.0.61] 08-10-2024
 ### Added
-* [VST-847](https://exotel.atlassian.net/browse/VST-847) : updated version of cloudonix from 5.2.53.29 to 5.2.53.30
+* [VST-847](https://exotel.atlassian.net/browse/VST-847) : Fix the Foreground service crash for Android 14
 
 
 ## [1.0.60] 30-09-2024
