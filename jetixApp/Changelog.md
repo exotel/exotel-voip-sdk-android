@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.62] 16-10-2024
+### Added
+* [VST-859](https://exotel.atlassian.net/browse/VST-859): In the stop function, the onDestroyMediaSession is handled, and stop can only be initiated in the Idle state.
 
 ## [1.0.61] 08-10-2024
 ### Added
