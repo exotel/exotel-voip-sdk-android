@@ -5,23 +5,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/logout"
-        android:title="@string/Logout"></item>
+        android:title="@string/Logout" />
 
     <item
         android:id="@+id/uploadLogs"
-        android:title="@string/upload_logs"></item>
+        android:title="@string/upload_logs" />
 
     <item
         android:id="@+id/about"
-        android:title="@string/About"></item>
+        android:title="@string/About" />
 
     <item
         android:id="@+id/postFeedback"
-        android:title="@string/lastCallFeedback"></item>
+        android:title="@string/lastCallFeedback" />
 
     <item
         android:id="@+id/accountDetails"
-        android:title="@string/accountDetails"></item>
+        android:title="@string/accountDetails" />
 
     <!--Removing debug dialing mode-->
     <!-- <item android:id="@+id/enableDebugDialling"
@@ -32,10 +32,10 @@
 
     <item
         android:id="@+id/enableMulticall"
-        android:title="@string/enableMulticall"></item>
+        android:title="@string/enableMulticall" />
 
     <item
         android:id="@+id/disableMulticall"
-        android:title="@string/disableMulticall"></item>
+        android:title="@string/disableMulticall" />
 
 </menu>

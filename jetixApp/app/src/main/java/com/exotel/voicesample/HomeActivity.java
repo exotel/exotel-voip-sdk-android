@@ -5,41 +5,17 @@
 package com.exotel.voicesample;
 
 import android.content.ComponentName;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-
-import com.exotel.voice.CallIssue;
-import com.exotel.voice.ExotelVoiceError;
-import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.lifecycle.Observer;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -48,7 +24,20 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
+import com.exotel.voice.CallIssue;
+import com.exotel.voice.ExotelVoiceError;
+import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import org.json.JSONObject;
 
@@ -56,6 +45,9 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.Date;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEvents, DeviceTokenStatusEvents, LogUploadEvents {
 
@@ -77,7 +69,6 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
      * {@link FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -89,28 +80,21 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
         super.onCreate(savedInstanceState);
         VoiceAppLogger.setContext(getApplicationContext());
         VoiceAppLogger.info(TAG, "In onCreate for Home Activity");
-
-
         setContentView(R.layout.activity_home);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.title_activity_toolbar);
         setSupportActionBar(toolbar);
         VoiceAppLogger.debug(TAG, "Setting context for logger");
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.addTab(tabLayout.newTab().setText("Dial"));
         tabLayout.addTab(tabLayout.newTab().setText("Contacts"));
         tabLayout.addTab(tabLayout.newTab().setText("Recent Calls"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
-
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
         VoiceAppLogger.debug(TAG, "Setting Tabs");
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -139,7 +123,6 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
         crashlytics.getInstance().setUserId(userId);
         crashlytics.setCustomKey(ApplicationSharedPreferenceData.USER_NAME.toString(), userId);
         VoiceAppLogger.debug(TAG, "Exit from onCreate");
-
     }
 
     @Override
@@ -169,7 +152,7 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
     protected void onResume() {
         super.onResume();
         VoiceAppLogger.debug(TAG, "on Resume HomeActivity");
-        if(!mBound) {
+        if (!mBound) {
             VoiceAppLogger.debug(TAG, "onResume HomeActivity : service not bound hence re-binding.");
             Intent intent = new Intent(this, VoiceAppService.class);
             try {
@@ -186,7 +169,6 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
     @Override
     protected void onPause() {
         super.onPause();
-
         VoiceAppLogger.debug(TAG, "onPause callback, removing event Listener");
     }
 
@@ -231,7 +213,7 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
          * [AP2AP-175] start
          * hide multi call based on Build Config variable
          */
-        if(BuildConfig.HIDE_MULTI_CALL) {
+        if (BuildConfig.HIDE_MULTI_CALL) {
             MenuItem menuItem = menu.findItem(R.id.enableMulticall);
             menuItem.setVisible(false);
             menuItem = menu.findItem(R.id.disableMulticall);
@@ -256,159 +238,124 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
         VoiceAppLogger.debug(TAG, "onOptionsItemSelected");
         ApplicationUtils applicationUtils = ApplicationUtils.getInstance(getApplicationContext());
         SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(getApplicationContext());
-        switch (item.getItemId()) {
-            case R.id.logout:
-                logout();
-                return true;
 
-            case R.id.about:
-                VoiceAppLogger.debug(TAG, "About button is clicked");
-                AlertDialog alertDialog;
-                AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-                builder.setTitle("SDK details");
-                String message = mService.getVersionDetails();
-                builder.setMessage(message);
-                builder.setCancelable(true);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        VoiceAppLogger.debug(TAG, "onClick of Dialog");
-                        dialogInterface.cancel();
-                    }
-                });
-                alertDialog = builder.create();
-                alertDialog.show();
-                return true;
+        int itemId = item.getItemId();
 
-            case R.id.uploadLogs:
-                VoiceAppLogger.debug(TAG, "Upload Logs is clicked");
-                // get prompts.xml view
-                LayoutInflater li = LayoutInflater.from(this);
-                View promptsView = li.inflate(R.layout.report_problem_prompt, null, false);
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                        this);
+        if (itemId == R.id.logout) {
+            logout();
+            return true;
 
-                // set prompts.xml to alertdialog builder
-                /*If the view already has a view, remove it. Can cause issues if not removed*/
-                if (promptsView.getParent()!=null){
-                    ((ViewGroup) promptsView.getParent()).removeView(promptsView);
+        } else if (itemId == R.id.about) {
+            VoiceAppLogger.debug(TAG, "About button is clicked");
+            AlertDialog alertDialog;
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+            builder.setTitle("SDK details");
+            String message = mService.getVersionDetails();
+            builder.setMessage(message);
+            builder.setCancelable(true);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    VoiceAppLogger.debug(TAG, "onClick of Dialog");
+                    dialogInterface.cancel();
                 }
-                alertDialogBuilder.setView(promptsView);
+            });
+            alertDialog = builder.create();
+            alertDialog.show();
+            return true;
 
-                final EditText userInput = (EditText) promptsView
-                        .findViewById(R.id.editTextDialogUserInput);
+        } else if (itemId == R.id.uploadLogs) {
+            VoiceAppLogger.debug(TAG, "Upload Logs is clicked");
+            LayoutInflater li = LayoutInflater.from(this);
+            View promptsView = li.inflate(R.layout.report_problem_prompt, null, false);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
-                // set dialog message
-                alertDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        // get user input and set it to result
-                                        // edit text
-                                        //result.setText(userInput.getText());
-                                        String description = "";
-                                        VoiceAppLogger.debug(TAG, "User Input text is: " + userInput.getText());
-                                        Date endDate = new Date();
-                                        Date startDate = new Date(endDate.getTime() - (UPLOAD_LOG_NUM_DAYS * DAY_IN_MS));
-                                        //getSignedUrlForLogUpload();
-                                        if (null == userInput.getText()) {
-                                            description = "";
-                                        } else {
-                                            description = userInput.getText().toString();
-                                        }
-                                        mService.setLogUploadEventListener(HomeActivity.this);
-                                        try {
-                                            mService.uploadLogs(startDate, endDate, description);
-                                        } catch (Exception e) {
-                                            VoiceAppLogger.debug(TAG, "Exception while uploadLogs: " + e.getMessage());
-                                        }
-                                    }
-                                })
-                        .setNegativeButton("Cancel",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                        VoiceAppLogger.debug(TAG, "Cancelling dialog");
-                                    }
-                                });
+            if (promptsView.getParent() != null) {
+                ((ViewGroup) promptsView.getParent()).removeView(promptsView);
+            }
+            alertDialogBuilder.setView(promptsView);
 
-                // create alert dialog
-                AlertDialog alertDialogReportProblem = alertDialogBuilder.create();
-                // show it
-                alertDialogReportProblem.show();
-                return true;
+            final EditText userInput = (EditText) promptsView.findViewById(R.id.editTextDialogUserInput);
 
-            case R.id.accountDetails:
-                VoiceAppLogger.debug(TAG, "Account Details is clicked");
-                AlertDialog alertDialogAccountDetails;
-                AlertDialog.Builder accountDetailsbuilder = new AlertDialog.Builder(HomeActivity.this);
-                accountDetailsbuilder.setTitle("Account Details");
-
-                String username = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.USER_NAME.toString());
-                String accountSid = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.ACCOUNT_SID.toString());
-                String hostname = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.APP_HOSTNAME.toString());
-
-                String accountDetailsMsg;
-                accountDetailsMsg = "Subscriber Name: " + username + "\n" + "\n";
-                accountDetailsMsg = accountDetailsMsg + "Account SID: " + accountSid + "\n" + "\n";
-                accountDetailsMsg = accountDetailsMsg + "Base URL: " + hostname;
-
-                VoiceAppLogger.debug(TAG, accountDetailsMsg);
-                accountDetailsbuilder.setMessage(accountDetailsMsg);
-                accountDetailsbuilder.setCancelable(true);
-                accountDetailsbuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        VoiceAppLogger.debug(TAG, "onClick of Dialog");
-                        dialogInterface.cancel();
+            alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    String description;
+                    VoiceAppLogger.debug(TAG, "User Input text is: " + userInput.getText());
+                    Date endDate = new Date();
+                    Date startDate = new Date(endDate.getTime() - (UPLOAD_LOG_NUM_DAYS * DAY_IN_MS));
+                    description = userInput.getText() != null ? userInput.getText().toString() : "";
+                    mService.setLogUploadEventListener(HomeActivity.this);
+                    try {
+                        mService.uploadLogs(startDate, endDate, description);
+                    } catch (Exception e) {
+                        VoiceAppLogger.debug(TAG, "Exception while uploadLogs: " + e.getMessage());
                     }
-                });
-                alertDialogAccountDetails = accountDetailsbuilder.create();
-                alertDialogAccountDetails.show();
-                return true;
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                    VoiceAppLogger.debug(TAG, "Cancelling dialog");
+                }
+            });
 
-            case R.id.postFeedback:
-                VoiceAppLogger.debug(TAG, "Provide Feedback for last call");
-                askForFeedback();
-                return true;
+            AlertDialog alertDialogReportProblem = alertDialogBuilder.create();
+            alertDialogReportProblem.show();
+            return true;
 
-                /*Removing debug dialing. Can enable this if required in future.*/
-         /*   case R.id.enableDebugDialling:
-                VoiceAppLogger.debug(TAG, "Enabling debug dialling");
-                applicationUtils.setDebugDiallingMode(true);
-                return true;
+        } else if (itemId == R.id.accountDetails) {
+            VoiceAppLogger.debug(TAG, "Account Details is clicked");
+            AlertDialog alertDialogAccountDetails;
+            AlertDialog.Builder accountDetailsBuilder = new AlertDialog.Builder(HomeActivity.this);
+            accountDetailsBuilder.setTitle("Account Details");
 
-            case R.id.disableDebugDialling:
-                VoiceAppLogger.debug(TAG, "Disabling debug dialling");
-                applicationUtils.setDebugDiallingMode(false);
-                return true;*/
+            String username = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.USER_NAME.toString());
+            String accountSid = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.ACCOUNT_SID.toString());
+            String hostname = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.APP_HOSTNAME.toString());
 
-            case R.id.enableMulticall:
-                VoiceAppLogger.debug(TAG, "Enable MultiCall");
-                sharedPreferencesHelper.putBoolean("enable_multicall", true);
-                return true;
+            String accountDetailsMsg = "Subscriber Name: " + username + "\n\n" + "Account SID: " + accountSid + "\n\n" + "Base URL: " + hostname;
 
-            case R.id.disableMulticall:
-                VoiceAppLogger.debug(TAG, "Disable MultiCall");
-                sharedPreferencesHelper.putBoolean("enable_multicall", false);
-                return true;
+            VoiceAppLogger.debug(TAG, accountDetailsMsg);
+            accountDetailsBuilder.setMessage(accountDetailsMsg);
+            accountDetailsBuilder.setCancelable(true);
+            accountDetailsBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    VoiceAppLogger.debug(TAG, "onClick of Dialog");
+                    dialogInterface.cancel();
+                }
+            });
+            alertDialogAccountDetails = accountDetailsBuilder.create();
+            alertDialogAccountDetails.show();
+            return true;
 
-            default:
-                return super.onOptionsItemSelected(item);
+        } else if (itemId == R.id.postFeedback) {
+            VoiceAppLogger.debug(TAG, "Provide Feedback for last call");
+            askForFeedback();
+            return true;
+
+        } else if (itemId == R.id.enableMulticall) {
+            VoiceAppLogger.debug(TAG, "Enable MultiCall");
+            sharedPreferencesHelper.putBoolean("enable_multicall", true);
+            return true;
+
+        } else if (itemId == R.id.disableMulticall) {
+            VoiceAppLogger.debug(TAG, "Disable MultiCall");
+            sharedPreferencesHelper.putBoolean("enable_multicall", false);
+            return true;
+
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-
     }
 
     private void askForFeedback() {
         LayoutInflater li = LayoutInflater.from(this);
         View promptsView = li.inflate(R.layout.call_rating_prompt, null, false);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                this);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
 
         // set prompts.xml to alertdialog builder
-        if (promptsView.getParent()!=null){
+        if (promptsView.getParent() != null) {
             ((ViewGroup) promptsView.getParent()).removeView(promptsView);
         }
         alertDialogBuilder.setView(promptsView);
@@ -428,33 +375,28 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
         spinnerPos = adapter2.getPosition("NO_ISSUE");
         spinner2.setSelection(spinnerPos);
         // set dialog message
-        alertDialogBuilder
-                .setCancelable(false)
-                .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // get user input and set it to result
-                                // edit text
-                                //result.setText(userInput.getText());
-                                int rating = Integer.parseInt(spinner1.getSelectedItem().toString());
-                                CallIssue issue = CallIssue.valueOf(spinner2.getSelectedItem().toString());
-                                VoiceAppLogger.debug(TAG, "Rating: " + rating + " Issue: " + issue);
-                                try {
-                                    mService.postFeedback(rating, issue);
-                                } catch (InvalidParameterException e) {
-                                    VoiceAppLogger.error(TAG, "Error is posting feedback: " + e.getMessage());
-                                }
+        alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // get user input and set it to result
+                // edit text
+                //result.setText(userInput.getText());
+                int rating = Integer.parseInt(spinner1.getSelectedItem().toString());
+                CallIssue issue = CallIssue.valueOf(spinner2.getSelectedItem().toString());
+                VoiceAppLogger.debug(TAG, "Rating: " + rating + " Issue: " + issue);
+                try {
+                    mService.postFeedback(rating, issue);
+                } catch (InvalidParameterException e) {
+                    VoiceAppLogger.error(TAG, "Error is posting feedback: " + e.getMessage());
+                }
 
 
-                            }
-                        })
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                VoiceAppLogger.debug(TAG, "Cancelling dialog");
-                            }
-                        });
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+                VoiceAppLogger.debug(TAG, "Cancelling dialog");
+            }
+        });
 
         // create alert dialog
         AlertDialog alertDialogReportProblem = alertDialogBuilder.create();
@@ -482,8 +424,7 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
     private ServiceConnection connection = new ServiceConnection() {
 
         @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
+        public void onServiceConnected(ComponentName className, IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             VoiceAppLogger.debug(TAG, "Service connected in HomeActivity");
             VoiceAppService.LocalBinder binder = (VoiceAppService.LocalBinder) service;
@@ -520,7 +461,6 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
                             public void run() {
                                 TextView initStatus = findViewById(R.id.toolbarTextStatus);
                                 initStatus.setText(exceptionMsg);
-
                                 initStatus.setTextColor(Color.RED);
                             }
                         });
@@ -528,9 +468,7 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
                 }
             }
             VoiceAppLogger.zipOlderLogs();
-
             VoiceAppLogger.debug(TAG, "Return from onServiceConnected in Home Activity");
-
         }
 
         @Override
@@ -642,10 +580,8 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
 
                 if (mService != null) {
                     VoiceAppStatus voiceAppStatus = mService.getCurrentStatus();
-                    VoiceAppLogger.debug(TAG, "updateStatus: VoiceAppState: " + voiceAppStatus.getState()
-                            + " deviceTokenState: " + deviceTokenStatus.getDeviceTokenState());
-                    if (VoiceAppState.STATUS_READY == voiceAppStatus.getState()
-                            && DeviceTokenState.DEVICE_TOKEN_SEND_SUCCESS == deviceTokenStatus.getDeviceTokenState()) {
+                    VoiceAppLogger.debug(TAG, "updateStatus: VoiceAppState: " + voiceAppStatus.getState() + " deviceTokenState: " + deviceTokenStatus.getDeviceTokenState());
+                    if (VoiceAppState.STATUS_READY == voiceAppStatus.getState() && DeviceTokenState.DEVICE_TOKEN_SEND_SUCCESS == deviceTokenStatus.getDeviceTokenState()) {
                         initStatus.setText(voiceAppStatus.getMessage());
                         initStatus.setTextColor(Color.GREEN);
                     } else if (VoiceAppState.STATUS_READY != voiceAppStatus.getState()) {

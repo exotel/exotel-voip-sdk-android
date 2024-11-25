@@ -155,8 +155,10 @@ public class ApplicationUtils {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(CHANNEL_ID,
-                    "Exotel Voip Sample", NotificationManager.IMPORTANCE_DEFAULT);
+                    "Exotel Voip Sample", NotificationManager.IMPORTANCE_HIGH);
+            serviceChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             NotificationManager manager = context.getSystemService(NotificationManager.class);
+
             manager.createNotificationChannel(serviceChannel);
         }
     }
@@ -225,6 +227,8 @@ public class ApplicationUtils {
                 .setContentTitle("Exotel Voice Application")
                 .setContentText(text)
                 .setContentIntent(pendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_CALL)
                 .setOnlyAlertOnce(true)
                 .setSmallIcon(R.drawable.ic_call_24dp)
                 .build();

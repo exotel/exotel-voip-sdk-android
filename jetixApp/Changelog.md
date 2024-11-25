@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.62] 25-11-2024
+### Added
+* [VST-859](https://exotel.atlassian.net/browse/VST-882): Updating the Foreground Service for Microphone Permission at the Runtime According to Android 14 Guidelines
+
+
 ## [1.0.62] 16-10-2024
 ### Added
 * [VST-859](https://exotel.atlassian.net/browse/VST-859): In the stop function, the onDestroyMediaSession is handled, and stop can only be initiated in the Idle state.

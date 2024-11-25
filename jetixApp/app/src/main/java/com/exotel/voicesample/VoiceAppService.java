@@ -105,7 +105,7 @@ public class VoiceAppService extends Service implements ExotelVoiceClientEventLi
             startForeground(NOTIFICATION_ID, notification);
         } else {
 //            startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST);
-            ServiceCompat.startForeground(this,NOTIFICATION_ID,notification,ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST);
+            ServiceCompat.startForeground(this, NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL);
         }
 
 
@@ -473,22 +473,6 @@ public class VoiceAppService extends Service implements ExotelVoiceClientEventLi
         }
     }
 
-    public void answer() throws Exception {
-        VoiceAppLogger.debug(TAG, "Answering call");
-        if (null == mCall) {
-            String message = "Call object is NULL";
-            throw new Exception(message);
-        }
-        try {
-            tonePlayback.stopTone();
-            mCall.answer();
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-
-        VoiceAppLogger.debug(TAG, "After Answering call");
-
-    }
 
     public int getCallDuration() {
 
@@ -517,7 +501,7 @@ public class VoiceAppService extends Service implements ExotelVoiceClientEventLi
 
     public VoiceAppStatus getCurrentStatus() {
         if (exotelVoiceClient == null) {
-            VoiceAppLogger.debug(TAG,"VoIP Client not initialized");
+            VoiceAppLogger.debug(TAG, "VoIP Client not initialized");
             voiceAppStatus.setState(VoiceAppState.STATUS_NOT_INITIALIZED);
             voiceAppStatus.setMessage("In Progress");
         } else if (initializationInProgress) {
@@ -711,6 +695,7 @@ public class VoiceAppService extends Service implements ExotelVoiceClientEventLi
             callEvents.onCallInitiated(call);
         }
         mCall = call;
+        updateForegroundServiceType(call,CallState.OUTGOING_INITIATED);
         VoiceAppLogger.debug(TAG, "End: onCallInitiated");
     }
 
@@ -740,6 +725,38 @@ public class VoiceAppService extends Service implements ExotelVoiceClientEventLi
         });
         VoiceAppLogger.debug(TAG, "End: onCallRinging");
     }
+
+    public void answer() throws Exception {
+        VoiceAppLogger.debug(TAG, "Answering call");
+        if (null == mCall) {
+            String message = "Call object is NULL";
+            throw new Exception(message);
+        }
+        try {
+            updateForegroundServiceType(mCall, CallState.ANSWERING);
+            tonePlayback.stopTone();
+            mCall.answer();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+        VoiceAppLogger.debug(TAG, "After Answering call");
+    }
+
+    private void updateForegroundServiceType(Call call, CallState outgoingInitiated) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Notification notification = utils.createNotification(outgoingInitiated, call.getCallDetails().getRemoteId(), call.getCallDetails().getCallId(), call.getCallDetails().getCallDirection());
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                    startForeground(NOTIFICATION_ID, notification);
+                } else {
+                    startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST);
+//                        ServiceCompat.startForeground(VoiceAppService.this, NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL);
+                }
+            }
+        });
+    }
+
 
     @Override
     public void onCallEstablished(Call call) {
