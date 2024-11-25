@@ -9,6 +9,7 @@ plugins {
 }
 
 android {
+    buildFeatures.buildConfig true
 
     packagingOptions {
         pickFirst("META-INF/okio.kotlin_module")
@@ -30,12 +31,12 @@ android {
             keyPassword 'exotel321'
         }
     }
-    compileSdkVersion 34
+    compileSdk 35
     defaultConfig {
         applicationId "com.exotel.voicesample"
         minSdkVersion 26
-        targetSdkVersion 34
-        versionCode 16
+        targetSdk 35
+        versionCode 17
         versionName "1.0.50"
         archivesBaseName = "ExotelVoice-" + versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
