@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
         super.onCreate(savedInstanceState);
         VoiceAppLogger.setContext(getApplicationContext());
         setContentView(R.layout.activity_login);
-        voiceAppService = VoiceAppService.getInstance(this);
+        voiceAppService = VoiceAppService.getInstance(this.getApplication().getApplicationContext());
         Button signInButton;
         EditText usernameText;
         Button reportProblemButton;
@@ -513,7 +513,7 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
     protected void onDestroy() {
         super.onDestroy();
         VoiceAppLogger.debug(TAG, "Service bound is: " + mBound);
-        mApplicationUtils.removeDeviceTokenListener(this);
+//        mApplicationUtils.removeDeviceTokenListener(this);
        /* if (mBound) {
             VoiceAppLogger.debug(TAG, "Unbinding the service");
             unbindService(connection);
@@ -522,7 +522,7 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
 
         }*/
         voiceAppService.removeStatusEventListener(this);
-        voiceAppService = null;
+//        voiceAppService = null;
         VoiceAppLogger.debug(TAG, "onDestroy");
     }
 

@@ -83,7 +83,7 @@ public class LaunchActvity extends AppCompatActivity {
 
 
     public void startingUpHome() {
-
+        VoiceAppService.getInstance(this.getApplicationContext());
         // We've bound to LocalService, cast the IBinder and get LocalService instance
         VoiceAppLogger.debug(TAG, "Service connected");
 //            VoiceAppService.LocalBinder binder = (VoiceAppService.LocalBinder) service;

@@ -88,7 +88,8 @@ public class VoiceAppService implements ExotelVoiceClientEventListener, CallList
 
     private VoiceAppService(Context context) {
         // Store the application context to avoid memory leaks
-        this.context = context.getApplicationContext();
+        this.context = context;
+        onCreate();
         onStartCommand();
     }
 
@@ -97,7 +98,8 @@ public class VoiceAppService implements ExotelVoiceClientEventListener, CallList
         if (instance == null) {
             synchronized (VoiceAppService.class) {
                 if (instance == null) {
-                    return new VoiceAppService(context);
+                    instance = new VoiceAppService(context);
+                    return instance;
                 }
             }
         }
@@ -278,10 +280,10 @@ public class VoiceAppService implements ExotelVoiceClientEventListener, CallList
     }
 
     public void onStartCommand() {
-        VoiceAppLogger.debug(TAG, "Entry: onStart command for service, startId: " );
+        VoiceAppLogger.debug(TAG, "Entry: onStart command for service, startId: ");
 
 
-        boolean startForeground = /*intent.getBooleanExtra("foreground", false);*/ false ;
+        boolean startForeground = /*intent.getBooleanExtra("foreground", false);*/ false;
         VoiceAppLogger.debug(TAG, "Start forground is: " + startForeground);
         if (startForeground) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

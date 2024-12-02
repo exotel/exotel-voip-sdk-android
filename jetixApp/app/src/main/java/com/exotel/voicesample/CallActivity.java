@@ -50,7 +50,7 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
 
     private static String TAG = "CallActivity";
 
-    private VoiceAppService mService;
+    //    private VoiceAppService mService;
     private boolean mBound;
     private String callId;
     private Handler handler = new Handler(Looper.getMainLooper());
@@ -64,19 +64,19 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
 
     ImageButton speakerButton;
     ImageButton muteButton;
+    private VoiceAppService voiceAppService;
     ImageButton bluetoothButton;
     private int connectedDevicesViaBluetooth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_call);
         VoiceAppLogger.setContext(getApplicationContext());
+        voiceAppService = VoiceAppService.getInstance(getApplicationContext());
         VoiceAppLogger.debug(TAG, "onCreate for call Activity");
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
         Intent intent = getIntent();
         callId = intent.getStringExtra("callId");
@@ -155,8 +155,7 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
         VoiceAppLogger.debug(TAG, "onDestroy for call Activity");
         try {
             CallActivity.this.unregisterReceiver(broadcastReceiver);
-        }
-        catch(RuntimeException re){
+        } catch (RuntimeException re) {
             VoiceAppLogger.warn(TAG, re.getMessage());
         }
     }
@@ -180,13 +179,11 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
         if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
             if (event.values[0] >= -SENSOR_SENSITIVITY && event.values[0] <= SENSOR_SENSITIVITY) {
                 VoiceAppLogger.debug(TAG, "Putting screen to off");
-                if (!proximityWakeLock.isHeld())
-                    proximityWakeLock.acquire();
+                if (!proximityWakeLock.isHeld()) proximityWakeLock.acquire();
             } else {
                 VoiceAppLogger.debug(TAG, "Putting screen to on");
 
-                if (proximityWakeLock.isHeld())
-                    proximityWakeLock.release();
+                if (proximityWakeLock.isHeld()) proximityWakeLock.release();
             }
         }
     }
@@ -220,17 +217,17 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Call call = mService.getCallFromCallId(callId);
-                if (null != mService && mBound && null != call) {
+                Call call = voiceAppService.getCallFromCallId(callId);
+                if (null != voiceAppService && mBound && null != call) {
                     int duration;
-                    if (call.getCallDetails().getCallState() == CallState.ESTABLISHED ||
-                    call.getCallDetails().getCallState() == CallState.MEDIA_DISRUPTED) {
-                        duration = mService.getCallDuration();
+                    if (call.getCallDetails().getCallState() == CallState.ESTABLISHED || call.getCallDetails().getCallState() == CallState.MEDIA_DISRUPTED) {
+                        duration = voiceAppService.getCallDuration();
                     }
                     /*uncomment the below code to get ringing duration*/
                     /*else if (call.getCallDetails().getCallState() == CallState.RINGING) {
                         duration = mService.getRingingDuration();
-                    } */else {
+                    } */
+                    else {
                         return;
                     }
 
@@ -270,7 +267,7 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
                         callDurationTextView.setText(callDuration);
 
                         if (call.getCallDetails().getCallState() == CallState.ESTABLISHED) {
-                            CallStatistics callStats = mService.getStatistics();
+                            CallStatistics callStats = voiceAppService.getStatistics();
                             VoiceAppLogger.debug(TAG, "Average Jitter Ms: " + callStats.getAverageJitterMs());
                             VoiceAppLogger.debug(TAG, "Max Jitter Ms: " + callStats.getMaxJitterMs());
                             VoiceAppLogger.debug(TAG, "Round Trip Time: " + callStats.getRttMs());
@@ -311,7 +308,7 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
 
 
                 try {
-                    mService.hangup();
+                    voiceAppService.hangup();
                 } catch (Exception e) {
                     VoiceAppLogger.debug(TAG, "Exception in hangup: " + e.getMessage());
                 }
@@ -328,7 +325,7 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
 
                 try {
                     VoiceAppLogger.debug(TAG, "Answering call");
-                    mService.answer();
+                    voiceAppService.answer();
                 } catch (Exception e) {
                     Toast.makeText(CallActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
@@ -364,11 +361,11 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
 
                 if (isMuteEnabled) {
                     muteButton.setBackgroundTintList(ContextCompat.getColorStateList(CallActivity.this, R.color.grey_button_color));
-                    mService.unmute();
+                    voiceAppService.unmute();
                     sharedPreferencesHelper.putBoolean("isMuteEnabled", false);
                 } else {
                     muteButton.setBackgroundTintList(ContextCompat.getColorStateList(CallActivity.this, R.color.blue_button_color));
-                    mService.mute();
+                    voiceAppService.mute();
                     sharedPreferencesHelper.putBoolean("isMuteEnabled", true);
                 }
             }
@@ -408,33 +405,37 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
             }
         });
     }
+
     private void disableSpeakerButton() {
         SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(getApplicationContext());
-        mService.disableSpeaker();
+        voiceAppService.disableSpeaker();
         sharedPreferencesHelper.putBoolean("isSpeakerEnabled", false);
         updateAudioButtonUI();
     }
+
     private void enableSpeakerButton() {
         SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(getApplicationContext());
-        if(sharedPreferencesHelper.getBoolean("isBluetoothEnabled")){
+        if (sharedPreferencesHelper.getBoolean("isBluetoothEnabled")) {
             disableBluetoothButton();
         }
-        mService.enableSpeaker();
+        voiceAppService.enableSpeaker();
         sharedPreferencesHelper.putBoolean("isSpeakerEnabled", true);
         updateAudioButtonUI();
     }
+
     private void disableBluetoothButton() {
         SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(getApplicationContext());
-        mService.disableBluetooth();
+        voiceAppService.disableBluetooth();
         sharedPreferencesHelper.putBoolean("isBluetoothEnabled", false);
         updateAudioButtonUI();
     }
+
     private void enableBluetoothButton() {
         SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(getApplicationContext());
-        if(sharedPreferencesHelper.getBoolean("isSpeakerEnabled")){
+        if (sharedPreferencesHelper.getBoolean("isSpeakerEnabled")) {
             disableSpeakerButton();
         }
-        mService.enableBluetooth();
+        voiceAppService.enableBluetooth();
         sharedPreferencesHelper.putBoolean("isBluetoothEnabled", true);
         updateAudioButtonUI();
     }
@@ -444,12 +445,12 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
             @Override
             public void run() {
                 SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(getApplicationContext());
-                if(sharedPreferencesHelper.getBoolean("isSpeakerEnabled")){
+                if (sharedPreferencesHelper.getBoolean("isSpeakerEnabled")) {
                     speakerButton.setBackgroundTintList(ContextCompat.getColorStateList(CallActivity.this, R.color.blue_button_color));
                 } else {
                     speakerButton.setBackgroundTintList(ContextCompat.getColorStateList(CallActivity.this, R.color.grey_button_color));
                 }
-                if(sharedPreferencesHelper.getBoolean("isBluetoothEnabled")){
+                if (sharedPreferencesHelper.getBoolean("isBluetoothEnabled")) {
                     bluetoothButton.setBackgroundTintList(ContextCompat.getColorStateList(CallActivity.this, R.color.blue_button_color));
                 } else {
                     bluetoothButton.setBackgroundTintList(ContextCompat.getColorStateList(CallActivity.this, R.color.grey_button_color));
@@ -476,73 +477,73 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
         digit1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mService.sendDtmf('1');
+                voiceAppService.sendDtmf('1');
             }
         });
         digit2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mService.sendDtmf('2');
+                voiceAppService.sendDtmf('2');
             }
         });
         digit3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mService.sendDtmf('3');
+                voiceAppService.sendDtmf('3');
             }
         });
         digit4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mService.sendDtmf('4');
+                voiceAppService.sendDtmf('4');
             }
         });
         digit5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mService.sendDtmf('5');
+                voiceAppService.sendDtmf('5');
             }
         });
         digit6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mService.sendDtmf('6');
+                voiceAppService.sendDtmf('6');
             }
         });
         digit7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mService.sendDtmf('7');
+                voiceAppService.sendDtmf('7');
             }
         });
         digit8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mService.sendDtmf('8');
+                voiceAppService.sendDtmf('8');
             }
         });
         digit9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mService.sendDtmf('9');
+                voiceAppService.sendDtmf('9');
             }
         });
         digit0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mService.sendDtmf('0');
+                voiceAppService.sendDtmf('0');
             }
         });
         digitStar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mService.sendDtmf('*');
+                voiceAppService.sendDtmf('*');
             }
         });
         digitHash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mService.sendDtmf('#');
+                voiceAppService.sendDtmf('#');
             }
         });
 
@@ -555,19 +556,18 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
     private ServiceConnection connection = new ServiceConnection() {
 
         @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
+        public void onServiceConnected(ComponentName className, IBinder service) {
 
             VoiceAppLogger.debug(TAG, "Service connected");
             VoiceAppService.LocalBinder binder = (VoiceAppService.LocalBinder) service;
-            mService = binder.getService();
+            voiceAppService = binder.getService();
             mBound = true;
-            if(mService.getCall() == null) {
+            if (voiceAppService.getCall() == null) {
                 changeActivity("No Active Call");
                 return;
             }
-            mService.removeCallEventListener(CallActivity.this);
-            mService.addCallEventListener(CallActivity.this);
+            voiceAppService.removeCallEventListener(CallActivity.this);
+            voiceAppService.addCallEventListener(CallActivity.this);
             VoiceAppLogger.debug(TAG, "Getting call object from callId: " + callId);
             updateUi();
         }
@@ -576,9 +576,9 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
         public void onServiceDisconnected(ComponentName arg0) {
             mBound = false;
             VoiceAppLogger.debug(TAG, "Service disconnected");
-            if (null != mService) {
+            if (null != voiceAppService) {
                 VoiceAppLogger.debug(TAG, "Removing event listeners");
-                mService.removeCallEventListener(CallActivity.this);
+                voiceAppService.removeCallEventListener(CallActivity.this);
             }
             CallActivity.this.unregisterReceiver(broadcastReceiver);
         }
@@ -589,7 +589,7 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
             @Override
             public void run() {
                 VoiceAppLogger.debug(TAG, "Update UI");
-                CallDetails callDetails = mService.getLatestCallDetails();
+                CallDetails callDetails = voiceAppService.getLatestCallDetails();
                 if (null == callDetails) {
                     VoiceAppLogger.debug(TAG, "Current Call Details are NULL");
                     return;
@@ -602,7 +602,7 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
                     if (CallState.INCOMING == callDetails.getCallState()) {
                         /* HACK for AUto Answer */
                         try {
-                            mService.answer();
+                            voiceAppService.answer();
                         } catch (Exception e) {
                             VoiceAppLogger.debug(TAG, "Exception in answering call");
                         }
@@ -674,13 +674,12 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
                     muteButton.setVisibility(View.VISIBLE);
                     speakerButton.setVisibility(View.VISIBLE);
                     callMessage.setVisibility(View.INVISIBLE);
-                    if(connectedDevicesViaBluetooth > 0 ) {
+                    if (connectedDevicesViaBluetooth > 0) {
                         bluetoothButton.setVisibility(View.VISIBLE);
                     }
                 }
 
-                if (callDetails.getCallState() == CallState.INCOMING || callDetails.getCallState() == CallState.ANSWERING
-                        || callDetails.getCallState() == CallState.ESTABLISHED) {
+                if (callDetails.getCallState() == CallState.INCOMING || callDetails.getCallState() == CallState.ANSWERING || callDetails.getCallState() == CallState.ESTABLISHED) {
                     if (!callContextMessage.isEmpty()) {
                         callMessage.setText(callContextMessage);
                         callMessage.setVisibility(View.VISIBLE);
@@ -693,21 +692,18 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
 
     /* CallBacks from SampleService */
     public void onCallInitiated(Call call) {
-        VoiceAppLogger.debug(TAG, "Call Initiated, callId: " + call.getCallDetails().getCallId()
-                + " Destination: " + call.getCallDetails().getRemoteId());
+        VoiceAppLogger.debug(TAG, "Call Initiated, callId: " + call.getCallDetails().getCallId() + " Destination: " + call.getCallDetails().getRemoteId());
     }
 
     public void onCallRinging(Call call) {
-        VoiceAppLogger.debug(TAG, "Call Ringing, callId: " + call.getCallDetails().getCallId()
-                + " Destination: " + call.getCallDetails().getRemoteId());
+        VoiceAppLogger.debug(TAG, "Call Ringing, callId: " + call.getCallDetails().getCallId() + " Destination: " + call.getCallDetails().getRemoteId());
         updateUi();
         startUpdateDuration();
     }
 
     public void onCallEstablished(Call call) {
-        VoiceAppLogger.debug(TAG, "Call Established, callId: " + call.getCallDetails().getCallId()
-                + " Destination: " + call.getCallDetails().getRemoteId());
-        if(mService.getCallAudioState() == CallAudioRoute.BLUETOOTH) {
+        VoiceAppLogger.debug(TAG, "Call Established, callId: " + call.getCallDetails().getCallId() + " Destination: " + call.getCallDetails().getRemoteId());
+        if (voiceAppService.getCallAudioState() == CallAudioRoute.BLUETOOTH) {
             connectedDevicesViaBluetooth++;
             enableBluetoothButton();
         }
@@ -724,7 +720,7 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
                     VoiceAppLogger.debug(TAG, "Call Direction: " + call.getCallDetails().getCallDirection());
                     if (CallDirection.OUTGOING == call.getCallDetails().getCallDirection()) {
                         try {
-                            mService.hangup();
+                            voiceAppService.hangup();
                         } catch (Exception e) {
                             VoiceAppLogger.debug(TAG, "Exception in hangup: " + e.getMessage());
                         }
@@ -748,23 +744,20 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
         applicationUtils.removeCallContext(userId);
         sharedPreferencesHelper.putBoolean("isSpeakerEnabled", false);
         sharedPreferencesHelper.putBoolean("isMuteEnabled", false);
-        VoiceAppLogger.debug(TAG, "Call ID: " + call.getCallDetails().getCallId()
-                + " Session ID: " + call.getCallDetails().getSessionId()
-                + " Establish time: " + call.getCallDetails().getCallEstablishedTime());
+        VoiceAppLogger.debug(TAG, "Call ID: " + call.getCallDetails().getCallId() + " Session ID: " + call.getCallDetails().getSessionId() + " Establish time: " + call.getCallDetails().getCallEstablishedTime());
 
         String message = " ";
         if (call.getCallDetails().getCallEndReason() != null) {
             if (call.getCallDetails().getCallEndReason() == CallEndReason.NONE) {
                 message = "Call Ended";
-            } else
-                message = "Call Ended - " + call.getCallDetails().getCallEndReason();
+            } else message = "Call Ended - " + call.getCallDetails().getCallEndReason();
         } else {
             message = "Call Ended";
         }
         changeActivity(message);
     }
 
-    private void changeActivity(String toastMessage){
+    private void changeActivity(String toastMessage) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -800,22 +793,18 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
 
     @Override
     public void onMediaDisrupted(Call call) {
-        VoiceAppLogger.debug(TAG, "Call media disrupted, callId: " + call.getCallDetails().getCallId()
-                + " Destination: " + call.getCallDetails().getRemoteId());
+        VoiceAppLogger.debug(TAG, "Call media disrupted, callId: " + call.getCallDetails().getCallId() + " Destination: " + call.getCallDetails().getRemoteId());
         updateUi();
         startUpdateDuration();
     }
 
     @Override
     public void onRenewingMedia(Call call) {
-        VoiceAppLogger.debug(TAG, "Call media renewing, callId: " + call.getCallDetails().getCallId()
-                + " Destination: " + call.getCallDetails().getRemoteId());
+        VoiceAppLogger.debug(TAG, "Call media renewing, callId: " + call.getCallDetails().getCallId() + " Destination: " + call.getCallDetails().getRemoteId());
     }
 
-    public void onCallFailed(Call call, ExotelVoiceError exotelVoiceError,
-                             String exophoneNumber) {
-        VoiceAppLogger.debug(TAG, "Call Failed: callId: " + call.getCallDetails().getCallId() +
-                " error: " + exotelVoiceError.getErrorType());
+    public void onCallFailed(Call call, ExotelVoiceError exotelVoiceError, String exophoneNumber) {
+        VoiceAppLogger.debug(TAG, "Call Failed: callId: " + call.getCallDetails().getCallId() + " error: " + exotelVoiceError.getErrorType());
         endUpdateDuration();
         if (true) {
             Intent intent = new Intent(CallActivity.this, HomeActivity.class);
@@ -833,6 +822,7 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
         VoiceAppLogger.debug(TAG, "onGetContextSuccess");
         updateUi();
     }
+
     private void registerBluetoothListener() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
@@ -840,8 +830,10 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
         filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         CallActivity.this.registerReceiver(broadcastReceiver, filter);
     }
+
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         BluetoothDevice device;
+
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -850,29 +842,29 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
             if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
                 connectedDevicesViaBluetooth++;
                 updateUi();
-                Toast.makeText(getApplicationContext(), "Bluetooth Device is now Connected",    Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Bluetooth Device is now Connected", Toast.LENGTH_SHORT).show();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         enableBluetoothButton();
                     }
-                },2000);
+                }, 2000);
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                 connectedDevicesViaBluetooth--;
-                if(connectedDevicesViaBluetooth > 0) {
-                    if(sharedPreferencesHelper.getBoolean("isBluetoothEnabled")){
+                if (connectedDevicesViaBluetooth > 0) {
+                    if (sharedPreferencesHelper.getBoolean("isBluetoothEnabled")) {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 enableBluetoothButton();
                             }
-                        },2000);
+                        }, 2000);
                     }
                     return;
                 }
                 disableBluetoothButton();
                 bluetoothButton.setVisibility(View.GONE);
-                Toast.makeText(getApplicationContext(), "Bluetooth Device is disconnected",       Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Bluetooth Device is disconnected", Toast.LENGTH_SHORT).show();
             }
         }
     };

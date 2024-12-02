@@ -182,9 +182,9 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
         super.onStop();
         VoiceAppLogger.debug(TAG, "onStop Method HomeActivity");
         VoiceAppLogger.info(TAG, "isFinishing is: " + isFinishing() + " Service bound: " + mBound);
-        if (mBound) {
+       /* if (mBound) {
             unbindService(connection);
-        }
+        }*/
         mApplicationUtils.removeDeviceTokenListener(this);
     }
 
