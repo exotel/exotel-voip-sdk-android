@@ -52,7 +52,7 @@ import okhttp3.Response;
 public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEvents, DeviceTokenStatusEvents, LogUploadEvents {
 
     private static String TAG = "HomeActivity";
-    private VoiceAppService mService;
+    //    private VoiceAppService mService;
     private boolean mBound;
 
     private TextView textBox;
@@ -74,11 +74,13 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
      */
     private ViewPager mViewPager;
 
+    private VoiceAppService voiceAppService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         VoiceAppLogger.setContext(getApplicationContext());
+        voiceAppService = VoiceAppService.getInstance(getApplicationContext());
         VoiceAppLogger.info(TAG, "In onCreate for Home Activity");
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -131,8 +133,10 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
         VoiceAppLogger.debug(TAG, "in onStart Method for Activity HACK");
         Intent intent = new Intent(this, VoiceAppService.class);
         try {
-            startService(intent);
-            bindService(intent, connection, BIND_AUTO_CREATE);
+           /* startService(intent);
+            bindService(intent, connection, BIND_AUTO_CREATE);*/
+            onServiceConnected();
+
             mApplicationUtils.addDeviceTokenListener(this);
         } catch (IllegalStateException e) {
             VoiceAppLogger.error(TAG, "Exception in starting service: " + e.getMessage());
@@ -156,14 +160,15 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
             VoiceAppLogger.debug(TAG, "onResume HomeActivity : service not bound hence re-binding.");
             Intent intent = new Intent(this, VoiceAppService.class);
             try {
-                startService(intent);
-                bindService(intent, connection, BIND_AUTO_CREATE);
+               /* startService(intent);
+                bindService(intent, connection, BIND_AUTO_CREATE);*/
+                onServiceConnected();
+
                 mApplicationUtils.addDeviceTokenListener(this);
             } catch (IllegalStateException e) {
                 VoiceAppLogger.error(TAG, "Exception in starting service: " + e.getMessage());
             }
-        }
-        VoiceAppLogger.debug(TAG, "Exit: onResume HomeActivity");
+        } VoiceAppLogger.debug(TAG, "Exit: onResume HomeActivity");
     }
 
     @Override
@@ -250,7 +255,7 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
             AlertDialog alertDialog;
             AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
             builder.setTitle("SDK details");
-            String message = mService.getVersionDetails();
+            String message = voiceAppService.getVersionDetails();
             builder.setMessage(message);
             builder.setCancelable(true);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -284,9 +289,9 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
                     Date endDate = new Date();
                     Date startDate = new Date(endDate.getTime() - (UPLOAD_LOG_NUM_DAYS * DAY_IN_MS));
                     description = userInput.getText() != null ? userInput.getText().toString() : "";
-                    mService.setLogUploadEventListener(HomeActivity.this);
+                    voiceAppService.setLogUploadEventListener(HomeActivity.this);
                     try {
-                        mService.uploadLogs(startDate, endDate, description);
+                        voiceAppService.uploadLogs(startDate, endDate, description);
                     } catch (Exception e) {
                         VoiceAppLogger.debug(TAG, "Exception while uploadLogs: " + e.getMessage());
                     }
@@ -384,7 +389,7 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
                 CallIssue issue = CallIssue.valueOf(spinner2.getSelectedItem().toString());
                 VoiceAppLogger.debug(TAG, "Rating: " + rating + " Issue: " + issue);
                 try {
-                    mService.postFeedback(rating, issue);
+                    voiceAppService.postFeedback(rating, issue);
                 } catch (InvalidParameterException e) {
                     VoiceAppLogger.error(TAG, "Error is posting feedback: " + e.getMessage());
                 }
@@ -406,9 +411,9 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
 
     private void logout() {
         VoiceAppLogger.debug(TAG, "In logout");
-        if (null != mService) {
+        if (null != voiceAppService) {
             VoiceAppLogger.debug(TAG, "Calling reset of service");
-            mService.reset();
+            voiceAppService.reset();
         }
         SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(getApplicationContext());
         sharedPreferencesHelper.putBoolean(ApplicationSharedPreferenceData.IS_LOGGED_IN.toString(), false);
@@ -417,6 +422,54 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
         startActivity(intent);
         VoiceAppLogger.debug(TAG, "Return from logout in HomeActivity");
     }
+
+
+    public void onServiceConnected() {
+        // We've bound to LocalService, cast the IBinder and get LocalService instance
+        /*VoiceAppLogger.debug(TAG, "Service connected in HomeActivity");
+        VoiceAppService.LocalBinder binder = (VoiceAppService.LocalBinder) service;
+        voiceAppService = binder.getService();*/
+//        mBound = true;
+        voiceAppService.addStatusEventListener(HomeActivity.this);
+
+        updateStatus();
+        if (voiceAppService != null) {
+            VoiceAppStatus voiceAppStatus = voiceAppService.getCurrentStatus();
+            if (VoiceAppState.STATUS_READY != voiceAppStatus.getState()) {
+                VoiceAppLogger.debug(TAG, "Initializing the service");
+                try {
+                    ApplicationUtils applicationUtils = ApplicationUtils.getInstance(getApplicationContext());
+                    SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(getApplicationContext());
+                    String regAuthToken = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.SUBSCRIBER_TOKEN.toString());
+
+                    if (!applicationUtils.isRefreshTokenValid(regAuthToken)) {
+                        String username = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.USER_NAME.toString());
+                        String accountSid = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.ACCOUNT_SID.toString());
+                        String appHostname = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.APP_HOSTNAME.toString());
+                        String password = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.PASSWORD.toString());
+                        applicationUtils.login(appHostname, accountSid, username, password, mCallback);
+
+                        //String sdkHostname = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.SDK_HOSTNAME.toString());
+                        //mService.initialize(sdkHostname, username, accountSid, regAuthToken);
+                    }
+                } catch (Exception e) {
+                    VoiceAppLogger.error(TAG, "Exception in service initialization: " + e.getMessage());
+                    String exceptionMsg = "Exception in service initialization: " + e.getMessage();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView initStatus = findViewById(R.id.toolbarTextStatus);
+                            initStatus.setText(exceptionMsg);
+                            initStatus.setTextColor(Color.RED);
+                        }
+                    });
+                }
+            }
+        }
+        VoiceAppLogger.zipOlderLogs();
+        VoiceAppLogger.debug(TAG, "Return from onServiceConnected in Home Activity");
+    }
+
 
     /**
      * Defines callbacks for service binding, passed to bindService()
@@ -428,14 +481,14 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             VoiceAppLogger.debug(TAG, "Service connected in HomeActivity");
             VoiceAppService.LocalBinder binder = (VoiceAppService.LocalBinder) service;
-            mService = binder.getService();
+            voiceAppService = binder.getService();
             mBound = true;
-            mService.addStatusEventListener(HomeActivity.this);
+            voiceAppService.addStatusEventListener(HomeActivity.this);
 
             updateStatus();
 
-            if (mService != null) {
-                VoiceAppStatus voiceAppStatus = mService.getCurrentStatus();
+            if (voiceAppService != null) {
+                VoiceAppStatus voiceAppStatus = voiceAppService.getCurrentStatus();
                 if (VoiceAppState.STATUS_READY != voiceAppStatus.getState()) {
                     VoiceAppLogger.debug(TAG, "Initializing the service");
                     try {
@@ -509,7 +562,7 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
             String accountSid = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.ACCOUNT_SID.toString());
             String displayName = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.DISPLAY_NAME.toString());
             try {
-                mService.initialize(sdkHostname, username, accountSid, regAuthToken, displayName);
+                voiceAppService.initialize(sdkHostname, username, accountSid, regAuthToken, displayName);
             } catch (Exception exp) {
                 VoiceAppLogger.error(TAG, "Exception in service initialization: " + e.getMessage());
                 String exceptionMsg = "Exception in service initialization: " + e.getMessage();
@@ -550,7 +603,7 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
                     sharedPreferencesHelper.putString(ApplicationSharedPreferenceData.EXOPHONE.toString(), exophone);
                     sharedPreferencesHelper.putString(ApplicationSharedPreferenceData.CONTACT_DISPLAY_NAME.toString(), contactDisplayName);
 
-                    mService.initialize(sdkHostname, username, accountSid, regAuthToken, displayName);
+                    voiceAppService.initialize(sdkHostname, username, accountSid, regAuthToken, displayName);
                 } catch (Exception exp) {
                     VoiceAppLogger.error(TAG, "Exception in service initialization: " + exp.getMessage());
                     String exceptionMsg = "Exception in service initialization: " + exp.getMessage();
@@ -573,13 +626,12 @@ public class HomeActivity extends AppCompatActivity implements VoiceAppStatusEve
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
                 ApplicationUtils utils = ApplicationUtils.getInstance(getApplicationContext());
                 DeviceTokenStatus deviceTokenStatus = utils.getDeviceTokenStatus();
                 TextView initStatus = findViewById(R.id.toolbarTextStatus);
 
-                if (mService != null) {
-                    VoiceAppStatus voiceAppStatus = mService.getCurrentStatus();
+                if (voiceAppService != null) {
+                    VoiceAppStatus voiceAppStatus = voiceAppService.getCurrentStatus();
                     VoiceAppLogger.debug(TAG, "updateStatus: VoiceAppState: " + voiceAppStatus.getState() + " deviceTokenState: " + deviceTokenStatus.getDeviceTokenState());
                     if (VoiceAppState.STATUS_READY == voiceAppStatus.getState() && DeviceTokenState.DEVICE_TOKEN_SEND_SUCCESS == deviceTokenStatus.getDeviceTokenState()) {
                         initStatus.setText(voiceAppStatus.getMessage());

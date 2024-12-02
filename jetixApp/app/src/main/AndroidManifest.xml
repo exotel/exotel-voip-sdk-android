@@ -50,13 +50,13 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
-        <service
+     <!--   <service
             android:name="com.exotel.voicesample.VoiceAppService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="phoneCall|microphone"
             android:permission="android.permission.FOREGROUND_SERVICE"
-           />
+           />-->
 
         <activity
             android:name="com.exotel.voicesample.LoginActivity"

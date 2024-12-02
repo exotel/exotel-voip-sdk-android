@@ -49,7 +49,7 @@ import java.util.ArrayList;
 public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEvents, DeviceTokenStatusEvents {
 
     private static String TAG = "LoginActivity";
-    private VoiceAppService mService;
+    //    private VoiceAppService mService;
     private boolean mBound;
     private String username;
     private String password;
@@ -60,6 +60,7 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
     private String sdkHostname;
     private String displayName;
     private String contactDisplayName;
+    private VoiceAppService voiceAppService;
     private ApplicationUtils mApplicationUtils;
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -69,7 +70,7 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
         super.onCreate(savedInstanceState);
         VoiceAppLogger.setContext(getApplicationContext());
         setContentView(R.layout.activity_login);
-
+        voiceAppService = VoiceAppService.getInstance(this);
         Button signInButton;
         EditText usernameText;
         Button reportProblemButton;
@@ -166,14 +167,16 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
                     VoiceAppLogger.debug(TAG, "Signing In");
 
                     progressBar.setVisibility(View.VISIBLE);
-                    if (null == mService) {
+                    if (null == voiceAppService) {
                         VoiceAppLogger.debug(TAG, "Starting the service");
 
-                        Intent serviceIntent = new Intent(LoginActivity.this, VoiceAppService.class);
-                        startService(serviceIntent);
-
+                        //sendTokenAndInitialize();
+                        ApplicationUtils applicationUtils = ApplicationUtils.getInstance(getApplicationContext());
+                        applicationUtils.login(appHostname, accountSid, username, password, mCallback);
+//                        Intent serviceIntent = new Intent(LoginActivity.this, VoiceAppService.class);
+//                        startService(serviceIntent);
                         VoiceAppLogger.debug(TAG, "Calling bind Service");
-                        bindService(serviceIntent, connection, BIND_AUTO_CREATE);
+//                        bindService(serviceIntent, connection, BIND_AUTO_CREATE);
                     } else {
                         VoiceAppLogger.debug(TAG, "Calling sendTokenAndInitialize fron onClick");
                         ApplicationUtils applicationUtils = ApplicationUtils.getInstance(getApplicationContext());
@@ -190,14 +193,10 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
             public void onClick(View v) {
                 if (advancedSettingsLayout.getVisibility() == View.VISIBLE) {
                     advancedSettingsLayout.setVisibility(View.GONE);
-                    toggleAdvancedSettings.setCompoundDrawablesWithIntrinsicBounds(
-                            null, null, arrowRight, null
-                    );
+                    toggleAdvancedSettings.setCompoundDrawablesWithIntrinsicBounds(null, null, arrowRight, null);
                 } else {
                     advancedSettingsLayout.setVisibility(View.VISIBLE);
-                    toggleAdvancedSettings.setCompoundDrawablesWithIntrinsicBounds(
-                            null, null, arrowDown, null
-                    );
+                    toggleAdvancedSettings.setCompoundDrawablesWithIntrinsicBounds(null, null, arrowDown, null);
                 }
             }
         });
@@ -251,7 +250,7 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
                 String token = task.getResult();
 
                 VoiceAppLogger.info(TAG, "onComplete for getFirebase Token");
-                VoiceAppLogger.debug(TAG, "Token is: " + token );
+                VoiceAppLogger.debug(TAG, "Token is: " + token);
 
                 // Log and toast
                 String msg = getString(R.string.msg_token_fmt, token);
@@ -295,11 +294,9 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
             Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
             return;
         }
-
-
         try {
             VoiceAppLogger.debug(TAG, "Calling initialize in LoginActivity");
-            mService.initialize(sdkHostname, username, accountSid, subscriberToken, displayName);
+            voiceAppService.initialize(sdkHostname, username, accountSid, subscriberToken, displayName);
         } catch (Exception e) {
             String message = "Exception in initialization";
             if (null != e.getMessage()) {
@@ -318,8 +315,7 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    VoiceAppLogger.error(TAG, "login:failed "
-                            + e.getMessage());
+                    VoiceAppLogger.error(TAG, "login:failed " + e.getMessage());
                     progressBar.setVisibility(View.INVISIBLE);
                     String message = "Login Failed: " + e.getMessage();
                     Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
@@ -387,14 +383,14 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
             }
         }
     };
+
     /**
      * Defines callbacks for service binding, passed to bindService()
      */
-    private ServiceConnection connection = new ServiceConnection() {
+  /*  private ServiceConnection connection = new ServiceConnection() {
 
         @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
+        public void onServiceConnected(ComponentName className, IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             VoiceAppLogger.debug(TAG, "Service connected in LoginActivity");
             VoiceAppService.LocalBinder binder = (VoiceAppService.LocalBinder) service;
@@ -410,11 +406,11 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            VoiceAppLogger.debug(TAG, "Service disconnected in LoginActivity");
-            mBound = false;
+           *//* VoiceAppLogger.debug(TAG, "Service disconnected in LoginActivity");
+            mBound = false;*//*
         }
     };
-
+*/
     @Override
     public void onStatusChange() {
         VoiceAppLogger.debug(TAG, "Received On Status Change in LoginActivty");
@@ -436,7 +432,7 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
     }
 
     private void processStatusChange() {
-        if (null == mService) {
+        if (null == voiceAppService) {
             VoiceAppLogger.warn(TAG, "Service not yet connected, not processing");
             return;
         }
@@ -449,7 +445,7 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             VoiceAppLogger.debug(TAG, "Starting HomeActivity");
-            mService.removeStatusEventListener(LoginActivity.this);
+            voiceAppService.removeStatusEventListener(LoginActivity.this);
             SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(getApplicationContext());
             sharedPreferencesHelper.putBoolean(ApplicationSharedPreferenceData.IS_LOGGED_IN.toString(), true);
             startActivity(intent);
@@ -460,7 +456,7 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
                 @Override
                 public void run() {
 
-                    VoiceAppStatus voiceAppStatus = mService.getCurrentStatus();
+                    VoiceAppStatus voiceAppStatus = voiceAppService.getCurrentStatus();
                     if (VoiceAppState.STATUS_INITIALIZATION_FAILURE == voiceAppStatus.getState()) {
                         String message = voiceAppStatus.getMessage();
                         Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
@@ -518,11 +514,15 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
         super.onDestroy();
         VoiceAppLogger.debug(TAG, "Service bound is: " + mBound);
         mApplicationUtils.removeDeviceTokenListener(this);
-        if (mBound) {
+       /* if (mBound) {
             VoiceAppLogger.debug(TAG, "Unbinding the service");
             unbindService(connection);
-        }
 
+
+
+        }*/
+        voiceAppService.removeStatusEventListener(this);
+        voiceAppService = null;
         VoiceAppLogger.debug(TAG, "onDestroy");
     }
 
@@ -537,31 +537,30 @@ public class LoginActivity extends AppCompatActivity implements VoiceAppStatusEv
         VoiceAppLogger.debug(TAG, "Asking for permissions");
         ArrayList<String> requestPermissionList = new ArrayList<String>();
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            checkAndAddToRequestPermissionList(requestPermissionList,Manifest.permission.POST_NOTIFICATIONS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            checkAndAddToRequestPermissionList(requestPermissionList, Manifest.permission.POST_NOTIFICATIONS);
         }
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            checkAndAddToRequestPermissionList(requestPermissionList,Manifest.permission.BLUETOOTH_CONNECT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            checkAndAddToRequestPermissionList(requestPermissionList, Manifest.permission.BLUETOOTH_CONNECT);
         }
-        checkAndAddToRequestPermissionList(requestPermissionList,android.Manifest.permission.RECORD_AUDIO);
-        checkAndAddToRequestPermissionList(requestPermissionList,Manifest.permission.READ_PHONE_STATE);
+        checkAndAddToRequestPermissionList(requestPermissionList, android.Manifest.permission.RECORD_AUDIO);
+        checkAndAddToRequestPermissionList(requestPermissionList, Manifest.permission.READ_PHONE_STATE);
         /** https://exotel.atlassian.net/browse/AP2AP-42
          * change : modified logic for requesting multiple permission at once.
          **/
-        if(!requestPermissionList.isEmpty()){
+        if (!requestPermissionList.isEmpty()) {
             String permissionListStr[] = requestPermissionList.toArray(new String[requestPermissionList.size()]);
-            ActivityCompat.requestPermissions(this, permissionListStr,1);
+            ActivityCompat.requestPermissions(this, permissionListStr, 1);
         }
         requestPermissionList.clear();
     }
 
-    private void checkAndAddToRequestPermissionList(ArrayList<String> requestPermissionList, String permission){
-        if (ContextCompat.checkSelfPermission(this, permission)
-                != PackageManager.PERMISSION_GRANTED) {
-            VoiceAppLogger.info(TAG,"permission will be asked for " + permission);
+    private void checkAndAddToRequestPermissionList(ArrayList<String> requestPermissionList, String permission) {
+        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+            VoiceAppLogger.info(TAG, "permission will be asked for " + permission);
             requestPermissionList.add(permission);
         } else {
-            VoiceAppLogger.info(TAG,"permission is already granted for " + permission);
+            VoiceAppLogger.info(TAG, "permission is already granted for " + permission);
         }
     }
 
