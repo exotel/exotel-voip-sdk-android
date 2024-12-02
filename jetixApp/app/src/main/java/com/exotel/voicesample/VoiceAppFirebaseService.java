@@ -66,10 +66,8 @@ public class VoiceAppFirebaseService extends FirebaseMessagingService {
             }
         }
         logRemoteMessages(remoteMessage);
-
         Date sendtTime = new Date(remoteMessage.getSentTime());
         Date curTime = new Date();
-
         VoiceAppLogger.info(TAG, "Push notification was sent at: " + sendtTime);
         VoiceAppLogger.info(TAG, "Current time is: " + curTime);
         VoiceAppLogger.info(TAG, "Current time in MS is: " + curTime.getTime());

@@ -232,7 +232,6 @@ public class VoiceAppService implements ExotelVoiceClientEventListener, CallList
                 throw new Exception(e.getMessage());
             }
         }
-
         callController = exotelVoiceClient.getCallController();
         callController.setCallListener(this);
         /* Temp - Added for Testing */
@@ -322,7 +321,7 @@ public class VoiceAppService implements ExotelVoiceClientEventListener, CallList
         VoiceAppLogger.debug(TAG, "Relay push notification is: " + relayPushNotification);
 
         /* If startService() was called for passing push notification */
-        if (relayPushNotification) {
+
            /* pushNotificationPayloadVersion = intent.getStringExtra("pushNotificationPayloadVersion");
             pushNotificationPayload = intent.getStringExtra("pushNotificationPayload");
             subscriberName = intent.getStringExtra("subscriberName");
@@ -332,18 +331,17 @@ public class VoiceAppService implements ExotelVoiceClientEventListener, CallList
             accountSid = intent.getStringExtra("accountSid");
             VoiceAppLogger.debug(TAG, "Payload Version: " + pushNotificationPayloadVersion + "payload: " + pushNotificationPayload + " userId: " + subscriberName);
 */
-            try {
-                String displayName = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.DISPLAY_NAME.toString());
-                initialize(hostname, subscriberName, accountSid, subscriberToken, displayName);
-            } catch (Exception e) {
-                VoiceAppLogger.error(TAG, "Exception in initialization for push notification");
-//                if (startForeground) {
-                VoiceAppLogger.debug(TAG, "Stopping foreground service");
-                makeServiceBackground();
-//                }
-            }
+        try {
+            String displayName = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.DISPLAY_NAME.toString());
+            initialize(hostname, subscriberName, accountSid, subscriberToken, displayName);
             VoiceAppLogger.debug(TAG, "Before sendPushNotifcationData");
+            makeServiceBackground();
             sendPushNotificationData(pushNotificationPayload, pushNotificationPayloadVersion, subscriberName);
+        } catch (Exception e) {
+            VoiceAppLogger.error(TAG, "Exception in initialization for push notification");
+//                if (startForeground) {
+            VoiceAppLogger.debug(TAG, "Stopping foreground service");
+//                }
         }
     }
 
@@ -796,7 +794,7 @@ public class VoiceAppService implements ExotelVoiceClientEventListener, CallList
             @Override
             public void run() {
                 NotificationManager manager;
-                manager = (NotificationManager) context.getSystemService(NotificationManager.class);
+//                manager = (NotificationManager) context.getSystemService(NotificationManager.class);
                /* if (null != manager) {
                     manager.notify(NOTIFICATION_ID, notification);
                 } else {
@@ -813,8 +811,24 @@ public class VoiceAppService implements ExotelVoiceClientEventListener, CallList
 
     @Override
     public void onCallEnded(Call call) {
+
+        Notification notification = utils.createNotification(CallState.ESTABLISHED, call.getCallDetails().getRemoteId(), call.getCallDetails().getCallId(), call.getCallDetails().getCallDirection());
+
+
+        NotificationManager manager;
+//                manager = (NotificationManager) context.getSystemService(NotificationManager.class);
+               /* if (null != manager) {
+                    manager.notify(NOTIFICATION_ID, notification);
+                } else {
+                    VoiceAppLogger.error(TAG, "Notification manager is NULL");
+                }*/
+
+        manager = context.getSystemService(NotificationManager.class);
+        manager.cancel(NOTIFICATION_ID);
+
         VoiceAppLogger.debug(TAG, "Call Ended, call ID: " + call.getCallDetails().getCallId() + " Session ID: " + call.getCallDetails().getSessionId() + "Call end reason: " + call.getCallDetails().getCallEndReason());
         ringingStartTime = 0;
+
 
         tonePlayback.stopTone();
 

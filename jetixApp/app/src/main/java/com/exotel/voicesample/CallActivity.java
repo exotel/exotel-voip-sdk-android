@@ -134,7 +134,6 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
             VoiceAppLogger.debug(TAG, "onPause: Releasing proximity sensor");
             proximityWakeLock.release();
         }
-
         sensorManager.unregisterListener(this);
     }
 
