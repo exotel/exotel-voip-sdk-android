@@ -110,8 +110,7 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
         VoiceAppLogger.debug(TAG, "onStart for call Activity");
         ApplicationUtils utils = ApplicationUtils.getInstance(getApplicationContext());
         utils.setCallContextListener(this);
-        Intent intent = new Intent(this, VoiceAppService.class);
-        bindService(intent, connection, BIND_AUTO_CREATE);
+        onServiceConnected();
 
     }
 
@@ -143,9 +142,9 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
     protected void onStop() {
         super.onStop();
         VoiceAppLogger.debug(TAG, "onStop for call Activity, service bound is: " + mBound);
-        if (mBound) {
+       /* if (mBound) {
             unbindService(connection);
-        }
+        }*/
 
     }
 
@@ -553,6 +552,22 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
     /**
      * Defines callbacks for service binding, passed to bindService()
      */
+
+    public void onServiceConnected() {
+        VoiceAppLogger.debug(TAG, "Service connected");
+//        VoiceAppService.LocalBinder binder = (VoiceAppService.LocalBinder) service;
+//        mBound = true;
+        if (voiceAppService.getCall() == null) {
+            changeActivity("No Active Call");
+            return;
+        }
+        voiceAppService.removeCallEventListener(CallActivity.this);
+        voiceAppService.addCallEventListener(CallActivity.this);
+        VoiceAppLogger.debug(TAG, "Getting call object from callId: " + callId);
+        updateUi();
+    }
+
+
     private ServiceConnection connection = new ServiceConnection() {
 
         @Override
@@ -714,9 +729,7 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-
                     VoiceAppLogger.debug(TAG, "**Timer task triggered for ending call");
-
                     VoiceAppLogger.debug(TAG, "Call Direction: " + call.getCallDetails().getCallDirection());
                     if (CallDirection.OUTGOING == call.getCallDetails().getCallDirection()) {
                         try {

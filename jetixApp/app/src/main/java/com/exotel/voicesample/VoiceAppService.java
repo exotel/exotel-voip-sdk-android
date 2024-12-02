@@ -300,14 +300,21 @@ public class VoiceAppService implements ExotelVoiceClientEventListener, CallList
 
             }
         }
-        String pushNotificationPayloadVersion;
+
+        VoiceAppLogger.debug(TAG, "Exit: onStartCommand for VoiceAppService");
+//        return START_NOT_STICKY;
+    }
+
+
+    public void parsingPushNotification(String pushNotificationPayloadVersion, String pushNotificationPayload, boolean relayPushNotification, String subscriberName, String hostname, String subscriberToken, String accountSid) {
+        /*String pushNotificationPayloadVersion;
         String pushNotificationPayload;
         boolean relayPushNotification;
         String subscriberName;
         String hostname;
         String subscriberToken;
         String accountSid;
-        String displayName;
+        String displayName;*/
         SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(getApplicationContext());
 
         relayPushNotification = false; /*intent.getBooleanExtra("relayPushNotification", false);*/
@@ -315,30 +322,29 @@ public class VoiceAppService implements ExotelVoiceClientEventListener, CallList
         VoiceAppLogger.debug(TAG, "Relay push notification is: " + relayPushNotification);
 
         /* If startService() was called for passing push notification */
-       /* if (relayPushNotification) {
-            pushNotificationPayloadVersion = intent.getStringExtra("pushNotificationPayloadVersion");
+        if (relayPushNotification) {
+           /* pushNotificationPayloadVersion = intent.getStringExtra("pushNotificationPayloadVersion");
             pushNotificationPayload = intent.getStringExtra("pushNotificationPayload");
             subscriberName = intent.getStringExtra("subscriberName");
             hostname = intent.getStringExtra("hostname");
-            displayName = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.DISPLAY_NAME.toString());
+
             subscriberToken = intent.getStringExtra("regAuthToken");
             accountSid = intent.getStringExtra("accountSid");
             VoiceAppLogger.debug(TAG, "Payload Version: " + pushNotificationPayloadVersion + "payload: " + pushNotificationPayload + " userId: " + subscriberName);
-
+*/
             try {
+                String displayName = sharedPreferencesHelper.getString(ApplicationSharedPreferenceData.DISPLAY_NAME.toString());
                 initialize(hostname, subscriberName, accountSid, subscriberToken, displayName);
             } catch (Exception e) {
                 VoiceAppLogger.error(TAG, "Exception in initialization for push notification");
-                if (startForeground) {
-                    VoiceAppLogger.debug(TAG, "Stopping foreground service");
-                    makeServiceBackground();
-                }
+//                if (startForeground) {
+                VoiceAppLogger.debug(TAG, "Stopping foreground service");
+                makeServiceBackground();
+//                }
             }
             VoiceAppLogger.debug(TAG, "Before sendPushNotifcationData");
             sendPushNotificationData(pushNotificationPayload, pushNotificationPayloadVersion, subscriberName);
-        }*/
-        VoiceAppLogger.debug(TAG, "Exit: onStartCommand for VoiceAppService");
-//        return START_NOT_STICKY;
+        }
     }
 
     public Call dial(String destination, String message) throws Exception {

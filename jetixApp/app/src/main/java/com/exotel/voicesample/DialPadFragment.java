@@ -80,7 +80,6 @@ public class DialPadFragment extends Fragment implements VoiceAppStatusEvents, C
                 if (!validateNumber(destination)) {
                     return;
                 }
-
                 ApplicationUtils utils = ApplicationUtils.getInstance(getActivity().getApplicationContext());
                 String number = utils.getUpdatedNumberToDial(destination);
                 utils.makeIPCall(voiceAppService, number, destination);
