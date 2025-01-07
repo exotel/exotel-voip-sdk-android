@@ -155,7 +155,7 @@ public class ApplicationUtils {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(CHANNEL_ID,
-                    "Exotel Voip Sample", NotificationManager.IMPORTANCE_HIGH);
+                    "Exotel Voice Sample", NotificationManager.IMPORTANCE_HIGH);
             serviceChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             NotificationManager manager = context.getSystemService(NotificationManager.class);
 
@@ -163,7 +163,8 @@ public class ApplicationUtils {
         }
     }
 
-    Notification createNotification(CallState state, String destination, String callId, CallDirection callDirection) {
+    Notification
+    createNotification(CallState state, String destination, String callId, CallDirection callDirection) {
 
         Intent notificationIntent;
         String text;
