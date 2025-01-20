@@ -66,7 +66,7 @@ public class VoiceAppService implements ExotelVoiceClientEventListener, CallList
     private String initializationErrorMessage;
     private RingTonePlayback tonePlayback;
     private ApplicationUtils utils;
-    private static final int NOTIFICATION_ID = 7;
+    private static final int NOTIFICATION_ID = 9;
     private final Object statusListenerListMutex = new Object();
 
     private VoiceAppStatus voiceAppStatus = new VoiceAppStatus();

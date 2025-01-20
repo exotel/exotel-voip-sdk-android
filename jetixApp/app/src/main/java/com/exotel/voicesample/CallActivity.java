@@ -51,7 +51,7 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
     private static String TAG = "CallActivity";
 
     //    private VoiceAppService mService;
-    private boolean mBound;
+//    private boolean mBound;
     private String callId;
     private Handler handler = new Handler(Looper.getMainLooper());
     private boolean mEnableMulticall = false;
@@ -140,7 +140,7 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
     @Override
     protected void onStop() {
         super.onStop();
-        VoiceAppLogger.debug(TAG, "onStop for call Activity, service bound is: " + mBound);
+//        VoiceAppLogger.debug(TAG, "onStop for call Activity, service bound is: " + mBound);
        /* if (mBound) {
             unbindService(connection);
         }*/
@@ -216,7 +216,7 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
             @Override
             public void run() {
                 Call call = voiceAppService.getCallFromCallId(callId);
-                if (null != voiceAppService && mBound && null != call) {
+                if (null != voiceAppService && null != call) {
                     int duration;
                     if (call.getCallDetails().getCallState() == CallState.ESTABLISHED || call.getCallDetails().getCallState() == CallState.MEDIA_DISRUPTED) {
                         duration = voiceAppService.getCallDuration();
@@ -575,7 +575,6 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
             VoiceAppLogger.debug(TAG, "Service connected");
             VoiceAppService.LocalBinder binder = (VoiceAppService.LocalBinder) service;
             voiceAppService = binder.getService();
-            mBound = true;
             if (voiceAppService.getCall() == null) {
                 changeActivity("No Active Call");
                 return;
@@ -588,7 +587,6 @@ public class CallActivity extends AppCompatActivity implements CallEvents, Senso
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
             VoiceAppLogger.debug(TAG, "Service disconnected");
             if (null != voiceAppService) {
                 VoiceAppLogger.debug(TAG, "Removing event listeners");
