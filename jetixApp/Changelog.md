@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.64] 07-02-2025
+### Added
+* [VST-942](https://exotel.atlassian.net/browse/VST-942): adding check for LogLevel NONE
+
 ## [1.0.63] 25-11-2024
 ### Added
 * [VST-859](https://exotel.atlassian.net/browse/VST-882): Updating the Foreground Service for Microphone Permission at the Runtime According to Android 14 Guidelines
