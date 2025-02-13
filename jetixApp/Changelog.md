@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.65] 11-02-2025
+### Added
+* [VST-942](https://exotel.atlassian.net/browse/VST-942): adding check for LogLevel NONE
+
 ## [1.0.64] 07-02-2025
 ### Added
 * [VST-942](https://exotel.atlassian.net/browse/VST-942): adding check for LogLevel NONE
