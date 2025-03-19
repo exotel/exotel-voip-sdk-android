@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.66] 19-03-2025
+### Added
+* [VST-963](https://exotel.atlassian.net/browse/VST-963): adding opus codec support based on tenant settings from profile api and MAX_RATE set to 8000
+
 ## [1.0.65] 11-02-2025
 ### Added
 * [VST-942](https://exotel.atlassian.net/browse/VST-942): adding check for LogLevel NONE
