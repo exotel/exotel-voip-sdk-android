@@ -1,6 +1,10 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [1.0.68] 01-08-2025
+### Added
+* [VST-1041](https://exotel.atlassian.net/browse/VST-1041): Added the hangup event matrix and syncing with the backend for SDK stability
+
 ## [1.0.67] 04-07-2025
 ### Added
 * [VST-1010](https://exotel.atlassian.net/browse/VST-1010): Added the latency matrix syncing with the backend for SDK stability
