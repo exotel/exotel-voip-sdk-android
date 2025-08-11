@@ -1,6 +1,10 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [1.0.69] 08-08-2025
+### Added
+* [VST-1068](https://exotel.atlassian.net/browse/VST-1068): upgrade the cloudonix sdk from .34 to .35 version because of Boot-Start broadcast listener crash.
+
 ## [1.0.68] 01-08-2025
 ### Added
 * [VST-1041](https://exotel.atlassian.net/browse/VST-1041): Added the hangup event matrix and syncing with the backend for SDK stability
