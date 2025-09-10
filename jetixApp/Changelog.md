@@ -1,6 +1,11 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+
+## [1.0.70] 08-08-2025
+### Added
+* [VST-1068](https://exotel.atlassian.net/browse/VST-1068): opus fix.
+
 ## [1.0.69] 08-08-2025
 ### Added
 * [VST-1068](https://exotel.atlassian.net/browse/VST-1068): upgrade the cloudonix sdk from .34 to .35 version because of Boot-Start broadcast listener crash.
