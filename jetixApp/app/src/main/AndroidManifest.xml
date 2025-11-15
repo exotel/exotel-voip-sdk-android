@@ -4,7 +4,7 @@
   -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.exotel.voicesample">
+    package="com.exotel.voicesampleapp">
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -35,7 +35,7 @@
         android:usesCleartextTraffic="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.exotel.voicesample.LaunchActvity"
+        <activity android:name="com.exotel.voicesampleapp.LaunchActvity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:exported="true">
@@ -46,12 +46,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.exotel.voicesample.CallActivity"
+            android:name="com.exotel.voicesampleapp.CallActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <service
-            android:name="com.exotel.voicesample.VoiceAppService"
+            android:name="com.exotel.voicesampleapp.VoiceAppService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="phoneCall|microphone"
@@ -59,20 +59,20 @@
            />
 
         <activity
-            android:name="com.exotel.voicesample.LoginActivity"
+            android:name="com.exotel.voicesampleapp.LoginActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
 
         </activity>
         <activity
-            android:name="com.exotel.voicesample.HomeActivity"
+            android:name="com.exotel.voicesampleapp.HomeActivity"
             android:allowBackup="true"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service
-            android:name="com.exotel.voicesample.VoiceAppFirebaseService"
+            android:name="com.exotel.voicesampleapp.VoiceAppFirebaseService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

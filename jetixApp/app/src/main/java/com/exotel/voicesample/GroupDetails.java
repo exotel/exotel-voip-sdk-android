@@ -1,4 +1,4 @@
-package com.exotel.voicesample;
+package com.exotel.voicesampleapp;
 
 import java.util.ArrayList;
 import java.util.List;

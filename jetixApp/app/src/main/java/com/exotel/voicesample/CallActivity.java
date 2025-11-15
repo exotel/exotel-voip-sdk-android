@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Exotel Techcom Pvt Ltd
  * All rights reserved
  */
-package com.exotel.voicesample;
+package com.exotel.voicesampleapp;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
