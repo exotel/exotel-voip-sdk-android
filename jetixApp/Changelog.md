@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.71] 13-09-2025
+### Added
+* [VST-1123](https://exotel.atlassian.net/browse/VST-1123): Android SDK upgrade:16 KB Page Support.
+
 ## [1.0.70] 08-08-2025
 ### Added
 * [VST-1068](https://exotel.atlassian.net/browse/VST-1068): opus fix.

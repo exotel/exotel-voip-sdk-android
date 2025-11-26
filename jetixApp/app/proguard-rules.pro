@@ -42,7 +42,7 @@
 
 ### Exotel Voice Client SDK
 ## Preserve serializable data
--keep class com.exotel.voicesample.PushNotificationData { *;}
+-keep class com.exotel.voicesampleapp.PushNotificationData { *;}
 
 ## Android Material Design APIs
 # Ignore dynamically referenced classes that should be part of Android baseport

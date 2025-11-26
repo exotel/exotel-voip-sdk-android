@@ -1,4 +1,4 @@
-package com.exotel.voicesample;
+package com.exotel.voicesampleapp;
 
 import android.content.ComponentName;
 import android.content.Context;
