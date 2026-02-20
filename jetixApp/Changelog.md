@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.72] 20-02-2025
+### Added
+* [VST-1360](https://exotel.atlassian.net/browse/VST-1360): Enhance null checks for mCallController in DefaultExotelVoiceClient to prevent potential NullPointerExceptions during SDK latency event logging and initialization failure handling. 
+
 ## [1.0.71] 13-09-2025
 ### Added
 * [VST-1123](https://exotel.atlassian.net/browse/VST-1123): Android SDK upgrade:16 KB Page Support.
