@@ -7,6 +7,8 @@ Download sample application from  Playstore : [Exotel App2App](https://play.goog
 Download the aar sdk file, follow the instructions provided in [Exotel-Voice-Client-Android-SDK-Integration-Guide.pdf](https://github.com/exotel/exotel-voip-sdk-android/blob/main/Exotel%20Voice%20Client%20Android%20SDK%20Integration%20Guide.pdf).  
 File: [exotel-voice-release.aar](https://github.com/exotel/exotel-voip-sdk-android/blob/main/SDK/exotel-voice-release.aar)
 
+Documentation: https://docs.exotel.com/voice-apis/client-android-sdk
+
 
 
 
