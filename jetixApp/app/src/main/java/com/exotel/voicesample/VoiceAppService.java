@@ -325,6 +325,10 @@ public class VoiceAppService extends Service implements ExotelVoiceClientEventLi
 
     public void sendDtmf(char digit) throws InvalidParameterException {
         VoiceAppLogger.debug(TAG, "Sending DTMF digit: " + digit);
+        if (null == mCall) {
+            VoiceAppLogger.error(TAG, "Cannot send DTMF, no active call");
+            return;
+        }
         mCall.sendDtmf(digit);
     }
 
